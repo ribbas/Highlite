@@ -22,7 +22,7 @@ def pdf_to_text(path):
         parsed_text = parsed_file.read()
 
     obj = cleaner.ContentCleaner(parsed_text)
-    print(obj.normalize())
+    return obj.normalize()
 
 
 if __name__ == '__main__':
