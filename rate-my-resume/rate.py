@@ -27,6 +27,10 @@ class RateResume:
         self.bow = pdf_to_text(self.path)
         self.intersection = (set(self.bow.keys()) & set(self.glob_bow.keys()))
 
+        self.ratios = {}
+        self.local_total = 0
+        self.global_total = 0
+
     def build(self):
 
         if self.build:
@@ -44,29 +48,47 @@ class RateResume:
 
         return self.intersection
 
-    def rate(self):
+    def get_stats(self, data=False):
 
-        ratios = {}
-        local_total = 0
-        global_total = 0
+        stats = {
+            "area": self.area,
+            "total_local": self.local_total,
+            "global_local": self.global_total,
+            "len_intersect": len(self.intersection),
+            "data": self.ratios
+        }
+
+        if not data:
+            return {
+                key: value for key, value in stats.items() if key != "data"
+            }
+
+        return stats
+
+    def rate(self):
 
         for word in self.intersection:
 
-            # if word in self.bow.keys():
-            ratios[word] = {
+            self.ratios[word] = {
                 "local": self.bow[word],
                 "global": self.glob_bow[word]
             }
-            local_total += self.bow[word]
-            global_total += self.glob_bow[word]
-
-        print(local_total, global_total)
-        return ratios
+            self.local_total += self.bow[word]
+            self.global_total += self.glob_bow[word]
 
 
 if __name__ == '__main__':
 
     from pprint import pprint
 
+    obj = RateResume(path="../sample/resume.pdf", area="Anthropology")
+    obj.rate()
+    pprint(obj.get_stats())
+
+    obj = RateResume(path="../sample/resume.pdf", area="Computer Science")
+    obj.rate()
+    pprint(obj.get_stats())
+
     obj = RateResume(path="../sample/resume.pdf", area="Data Science")
-    pprint(obj.rate())
+    obj.rate()
+    pprint(obj.get_stats())
