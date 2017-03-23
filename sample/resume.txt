@@ -1,0 +1,61 @@
+                                              Sabbir Ahmed
+                               Greenbelt, MD | sabbir0ahmed0@gmail.com | sabbirsphere.com
+
+
+                  Education
+University of Maryland, Baltimore County               Major: Computer Engineering (Communications Track)
+May, 2018 (Expected)                                   Minor: Applied Mathematics
+
+General Assembly, D.C.                                 Certificate: Data Science
+July, 2016
+
+                  Skills
+Languages                                              Python, JavaScript, C/C++, Bash, R
+Engineering / Mathematical IDEs                        MATLAB, Arduino, Mathematica
+Web Frameworks                                         Django, Flask, AngularJS
+
+
+                  Experience
+Web Data Analyst                                           Cross-compiled Python web applications to provide users with user
+Baltimore Neighborhood Indicators Alliance                 friendly standalone executables
+September, 2016 - Current                                  Developed APIs to extract unstructured data from public and
+                                                           internal websites and PostgreSQL databases
+                                                           Manipulated data to be integrated across multiple platforms for
+                                                           geographical information systems
+
+IT Specialist Trainee                                      Developed prototypes of internal report generation systems to
+U.S. Department of Labor, Bureau of Labor Statistics       present more efficient approaches
+May, 2016 - February, 2017                                 Contributed to an internal job submission system through
+                                                           developing the appearance and functionality of screens of the user
+                                                           interface
+                                                           Debugged Bash scripts that were being tested for their
+                                                           functionalities after being continuously migrated from UNIX
+                                                           environments to Linux
+
+Technical Specialist Student Assistant                     Designed software programs to automatically generate financial
+University of Maryland, Baltimore County                   reports from confidential systems
+August, 2015 - Current                                     Provide technical assistance throughout the office
+
+Web Developer                                              Created a website with functional user-friendly forms for clients to
+AD&C Management Co.                                        communicate securely
+May, 2015 - August, 2015                                   Maintained Oracle schemas for the financial transactions for the
+                                                           organization
+
+                  Projects | GitHub: kug3lblitz
+Sphere, January, 2017           Constructed an iOS app that uses image recognition to recognize users' faces and charity
+                                organization logos to make micro-transactions
+
+Close Crawl, Ongoing            Cross-compiled a standalone Flask web application with user friendly interfaces to scrape
+                                foreclosure cases in the city of Baltimore
+                                Configured to continuously crawl for new case data made available and query to update
+                                PostgreSQL databases
+
+Heat Replay, July, 2016         Built an accurate model using NLTK and scikit-learn that predicts a song’s popularity based
+                                on its lyrical content
+                                Created the dataset by merging the 280 GB Million Song Dataset with text data scraped and
+                                cleaned from MetroLyrics with a self-made API
+
+Major Way, January, 2016        Developed a web application that predicted the discipline of the user’s school curriculums
+General Assembly:               Generated statistical distributions on the content and subfields of the discipline
+Best Education Hack
+

@@ -1,0 +1,3 @@
+[submodule "resquest"]
+	path = resquest
+	url = https://github.com/kug3lblitz/resquest

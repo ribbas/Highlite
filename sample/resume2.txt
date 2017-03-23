@@ -1,0 +1,62 @@
+                                                                                            ✉ jaime.orellana789@gmail.com
+
+Jaime Orellana                                                                                jaimeorellana.com
+                                                                                              github.com/Jaime5
+
+Frontend & Backend Developer                                                                  linkedin.com/in/jaimeorellana
+
+
+
+
+Projects
+    Kindrone
+    Dragon Hacks @ Drexel University, Third Place Hack
+           We developed a program that used the Kinect sensors to communicate with an AR.Drone.
+           The Kinect was then hooked up to send commands to the AR.Drone by the use of hand gestures
+           We set out with the goal of advancing existing forms of quadrotor control
+    Team: Ammar Al-Kahfah, Jaime Orellana
+    Tools: KinectSDK, AR.DroneSDK, C#, VisualBasic
+
+    Major Way
+    Hoya Hacks @ Georgetown University, Best Education Hack
+           We created a website application that takes in an uploaded four-year major curriculum and returns
+           a graph of the most relevant subtopics in the major.
+           Our goal was to provide STEM students a service that outlines their major's subject composition so
+           that they would be better informed about it.
+    Team: Sabbir Ahmed, Justin Chavez, Ana Ortez-Rivera, Jaime Orellana
+    Tools: Python, JavaScript, Bootstrap, Jquery, Flask and Natural Language Processing
+
+
+
+Experiences
+    Software Engineer Intern
+    InfoTeK                                                                               Jan 2016 - Feb 2016
+           Developed file system API for user upload/download
+           Improved knowledge on website security by using HTTPS protocol and server firewalls
+           Gained experience using Java for Enterprise use, specifically Google Webkit Tools
+
+    Project Intern
+    USDA                                                                                   Jul 2015 - Aug 2015
+           Experienced the macro, federal level of policy transactions, specifically the policy generation of
+           renewable energy and farming initiatives
+
+    Intern
+    MolBox LLC                                                                             Jul 2014 - Aug 2014
+           Developed skills using 3D animation with AutoDesk Maya
+           Aided in replacing hardware from damaged computers
+           Gained experience using Linux(Ubuntu) systems
+
+    Technical Applicant Preparation (TAP) Campus Ambassador
+    CODE2040
+           Informed students at my school of future technological internships
+           Mentored students in tech-related fields, specifically under-represented minorities
+           Spread awareness of CODE2040 Programs and shared my experiences at CODE2040 programs
+
+
+
+Education
+    B.Sc: Computer Engineering, Mathematics
+    University of Maryland, Baltimore County                                                        2014 - 2018
+
+                                              https://www.visualcv.com/jaime-orellana
+
