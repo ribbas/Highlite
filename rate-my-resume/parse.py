@@ -28,4 +28,3 @@ def pdf_to_text(path):
 if __name__ == '__main__':
 
     obj = pdf_to_text("../sample/resume.pdf")
-    # obj.generate_bow()

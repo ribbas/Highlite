@@ -28,7 +28,10 @@ update:
 .PHONY: clean
 clean:
 	# clean out cache and temporary files
-	@find . \( -name "*.pyc" -type f -o -name "__pycache__" -type d \) -delete
+	@find . \( \
+		-name "*.pyc" -o -name "resume.txt" -o -name "resume.html" \
+		\) -type f -delete
+	@find -name "__pycache__" -type d -delete
 
 
 .PHONY: test

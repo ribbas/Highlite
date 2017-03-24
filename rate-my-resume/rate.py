@@ -16,12 +16,14 @@ class RateResume:
         self.area = area
         self.pages = pages
         self.anon = anon
-        self.build = build
+
         self.resume_corpus = buildcorpus.ResumeCorpus(
             area=self.area,
             pages=self.pages,
             anon=self.anon
         )
+        if build:
+            self.resume_corpus.build()
 
         self.glob_bow = self.resume_corpus.get_data(data="bow")
         self.bow = pdf_to_text(self.path)
@@ -80,15 +82,11 @@ class RateResume:
 if __name__ == '__main__':
 
     from pprint import pprint
+    resume = "sample/ana.pdf"
+    corpuses = ("Anthropology", "Computer Science", "Data Science", "Chemistry")
 
-    obj = RateResume(path="../sample/resume.pdf", area="Anthropology")
-    obj.rate()
-    pprint(obj.get_stats())
+    for i in corpuses:
 
-    obj = RateResume(path="../sample/resume.pdf", area="Computer Science")
-    obj.rate()
-    pprint(obj.get_stats())
-
-    obj = RateResume(path="../sample/resume.pdf", area="Data Science")
-    obj.rate()
-    pprint(obj.get_stats())
+        obj = RateResume(path=resume, area=i)
+        obj.rate()
+        pprint(obj.get_stats())
