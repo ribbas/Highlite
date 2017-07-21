@@ -4,16 +4,13 @@
 from __future__ import absolute_import, unicode_literals
 
 from getresume import buildcorpus
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
 
 from .parse import pdf_to_text
-from .textfilters import normalize_text
 
 
-class RateResume(object):
+class RateResume:
 
-    def __init__(self, path, area, pages=1, anon=True, build=False):
+    def __init__(self, path, area, pages=[], anon=True, build=False):
 
         self.path = path
         self.area = area
@@ -28,33 +25,18 @@ class RateResume(object):
         if build:
             self.resume_corpus.build()
 
-        # self.corpus = self.resume_corpus.get_data(data="bow")
-        self.corpus = pdf_to_text("sample/resume2.pdf")
-        self.resume = pdf_to_text(self.path)
-        # self.intersection = (set(self.bow.keys()) & set(self.glob_bow.keys()))
+        self.glob_bow = self.resume_corpus.get_data(data="bow")
+        self.bow = pdf_to_text(self.path)
+        self.intersection = (set(self.bow.keys()) & set(self.glob_bow.keys()))
 
-        # self.ratios = {}
-        # self.local_total = 0
-        # self.global_total = 0
+        self.ratios = {}
+        self.local_total = 0
+        self.global_total = 0
 
     def build(self):
 
         if self.build:
             self.resume_corpus.build()
-
-    def generate_tfidf(self, max_feats=None, ngram_range=(1, 3)):
-
-        vectorizer = TfidfVectorizer(
-            preprocessor=normalize_text,
-            max_features=max_feats,
-            ngram_range=ngram_range,
-            stop_words='english'
-        )
-
-        tfidf = vectorizer.fit_transform([self.resume, self.corpus])
-        cosine_similarities = linear_kernel(tfidf[0:1], tfidf).flatten()
-
-        print(cosine_similarities)
 
     def get_glob_bow(self):
 

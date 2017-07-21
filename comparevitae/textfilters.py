@@ -13,18 +13,21 @@ lemma = WordNetLemmatizer()
 
 def normalize_text(content):
 
-    norm_text = content.lower().encode("ascii", "ignore")
+    norm_text = content.encode("ascii", "ignore").lower()
 
     for white_space in u"\n\r":
         norm_text = norm_text.replace(white_space, " ")
 
-    for p in punctuation:
-        norm_text = norm_text.replace(p, "")
-
-    words = filter(lambda x: x.strip() != "", norm_text.split(" "))
-    words = filter(lambda x: not x.isdigit() and len(x) > 3, words)
+    words = norm_text.split()
+    words = (word for word in words if (not word.isdigit() and len(word) > 2))
     words = [lemma.lemmatize(x) for x in words]
-    # words = [re.sub(digit_pat, "", x) for x in words]
+
+    for i, word in enumerate(words):
+        if any(p in word for p in ('(', ')')):
+            words[i] = word[word.find("(") + 1:word.find(")")]
+
+        if words[i][-1] in punctuation and words[i][-2] not in punctuation:
+            words[i] = word.replace(word[-1], '')
 
     time_filtered = []
 
@@ -36,4 +39,4 @@ def normalize_text(content):
         except (TypeError, ValueError):
             time_filtered.append(word)
 
-    return time_filtered
+    return ' '.join(time_filtered)
