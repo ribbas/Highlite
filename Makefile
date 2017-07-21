@@ -64,6 +64,6 @@ clean:
 reset:
 	# remove distribution and raw data files
 	@find . \( -path "./corpus/*" -o -path "./dist/*" -o -path "./data/*" -o \
-		-path "./*.egg-info/*" \) -delete
+		-path "resume.txt" \) -delete
 	@find . \( -path "./corpus" -o -path "./dist" -o -path "./data" -o \
 		-path "./*.egg-info" \) -empty -delete

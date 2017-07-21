@@ -3,8 +3,9 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from parse import pdf_to_text
-from resquest import buildcorpus
+from getresume import buildcorpus
+
+from .parse import pdf_to_text
 
 
 class RateResume:
