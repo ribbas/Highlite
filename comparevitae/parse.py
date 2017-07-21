@@ -5,10 +5,9 @@
 """parse
 """
 
-from __future__ import print_function, unicode_literals
+from __future__ import absolute_import, unicode_literals
 import subprocess
 
-from context import resquest
 from resquest import cleaner
 from settings import PARSED_PATH
 
