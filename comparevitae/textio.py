@@ -8,9 +8,7 @@
 from __future__ import absolute_import, unicode_literals
 import subprocess
 
-# from getresume import cleaner
 from .settings import PARSED_PATH
-from .textfilters import normalize_text
 
 
 def pdf_to_text(path):
@@ -22,8 +20,7 @@ def pdf_to_text(path):
             line.decode('utf-8').strip() for line in parsed_file.readlines()
         )
 
-    # obj = cleaner.ContentCleaner(parsed_text)
-    return normalize_text(' '.join(parsed_text))
+    return ' '.join(parsed_text)
 
 
 if __name__ == '__main__':
