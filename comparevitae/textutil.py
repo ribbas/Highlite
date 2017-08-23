@@ -26,7 +26,7 @@ def penn_to_wn(tag):
     return wn.NOUN
 
 
-def normalize_text(content, proper_nouns):
+def normalize_text(content, ignore_words):
 
     norm_text = content.encode("ascii", "ignore").lower()
 
@@ -36,7 +36,7 @@ def normalize_text(content, proper_nouns):
     words = norm_text.split()
 
     words = (
-        word for word in words if not any([x in word for x in proper_nouns])
+        word for word in words if not any([x in word for x in ignore_words])
     )
     words = [word for word in words if not word.isdigit()]
     words = pos_tag(words)

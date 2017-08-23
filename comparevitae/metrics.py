@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import json
+
 from getresume.buildcorpus import ResumeCorpus
 from getresume.settings import paths as getresume_paths
 import numpy as np
@@ -15,16 +17,19 @@ from .textutil import normalize_text
 
 class RateResume(object):
 
-    def __init__(self, path, areas, proper_nouns, pages=1, anon=True,
+    def __init__(self, path, areas, ignore_words, pages=1, anon=True,
                  build=False):
 
         self.path = path
         self.areas = areas
-        self.corpus = []
-        self.test_resumes = []
-        self.proper_nouns = proper_nouns
+        self.ignore_words = ignore_words
         self.pages = pages
         self.anon = anon
+
+        self.corpus = []
+        self.test_resumes = []
+        self.tfidf_matrix = None
+        self.feature_names = None
 
         for area in self.areas:
 
@@ -60,26 +65,33 @@ class RateResume(object):
 
         tfidf = TfidfVectorizer(
             preprocessor=lambda x: normalize_text(
-                x, proper_nouns=self.proper_nouns),
+                x, ignore_words=self.ignore_words),
             max_features=max_feats,
             ngram_range=ngram_range,
             stop_words=stop_words,
         )
 
-        tfidf_matrix = tfidf.fit_transform(self.resume + self.corpus)
-        cos_sim = linear_kernel(tfidf_matrix[:1], tfidf_matrix).flatten()[1:]
+        self.tfidf_matrix = tfidf.fit_transform(self.resume + self.corpus)
+        self.feature_names = tfidf.get_feature_names()
 
-        x = np.asarray(self.test_resumes)
-        print(x[cos_sim.argsort()[::-1]][0])
-        y = np.asarray(self.corpus)
-        print(y[cos_sim.argsort()[::-1]][0])
-        print(cos_sim[cos_sim.argsort()[::-1]].shape)
-        feats = tfidf.get_feature_names()
+    def get_score(self, filename="resume_tfidf", top_indicies=5):
 
-        feature_index = tfidf_matrix[0, :].nonzero()[1]
+        cos_sim = linear_kernel(
+            self.tfidf_matrix[:1], self.tfidf_matrix).flatten()[1:]
+        self.top_indicies = cos_sim.argsort()[:-(top_indicies + 1):-1]
+        resume_names = np.asarray(self.test_resumes)
+        feature_index = self.tfidf_matrix[0].nonzero()[1]
         tfidf_scores = zip(
-            feature_index, (tfidf_matrix[0, i] for i in feature_index))
+            feature_index, (self.tfidf_matrix[0, i] for i in feature_index)
+        )
+        tfidf_scores_features = (
+            (self.feature_names[i], s) for (i, s) in tfidf_scores
+        )
 
-        tfidf_scores = ((feats[i], s) for (i, s) in tfidf_scores)
-        for w, s in tfidf_scores:
-            print w, s
+        data = {
+            "top_resumes": list(resume_names[self.top_indicies]),
+            "tfidf_scores": dict(tfidf_scores_features),
+        }
+
+        with open(filename + ".json", "w") as out_file:
+            json.dump(data, out_file)
