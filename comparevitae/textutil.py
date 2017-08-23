@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import, unicode_literals
+
+import json
 from string import punctuation
 
 from dateutil import parser as date_parser
@@ -8,8 +11,7 @@ from nltk import pos_tag
 from nltk.corpus import wordnet as wn
 from nltk.stem import WordNetLemmatizer
 
-
-lemma = WordNetLemmatizer()
+from .settings import PARSED_PATH
 
 
 def penn_to_wn(tag):
@@ -28,6 +30,7 @@ def penn_to_wn(tag):
 
 def normalize_text(content, ignore_words):
 
+    lemma = WordNetLemmatizer()
     norm_text = content.encode("ascii", "ignore").lower()
 
     for punc in punctuation:
@@ -60,3 +63,18 @@ def normalize_text(content, ignore_words):
             time_filtered.append(word)
 
     return " ".join(filter(None, time_filtered))
+
+
+def recreate_doc(tfidf_scores_path):
+
+    tfidf_scores = {}
+    resume_text = ""
+
+    with open(tfidf_scores_path) as tfidf_scores_file:
+        tfidf_scores = json.load(tfidf_scores_file)
+
+    with open(PARSED_PATH) as resume_file:
+        resume_text = resume_file.read()
+
+    print tfidf_scores
+    print resume_text
