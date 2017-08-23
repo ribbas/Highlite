@@ -17,12 +17,7 @@ def pdf_to_text(path):
 
     with open(PARSED_PATH) as parsed_file:
         parsed_text = (
-            line.decode('utf-8').strip() for line in parsed_file.readlines()
+            line.decode("utf-8").strip() for line in parsed_file.readlines()
         )
 
-    return ' '.join(parsed_text)
-
-
-if __name__ == '__main__':
-
-    obj = pdf_to_text("../sample/resume.pdf")
+    return " ".join(parsed_text)

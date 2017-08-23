@@ -9,9 +9,9 @@ if __name__ == '__main__':
 
     obj = RateResume(
         path="sample/sabbir2.pdf",
-        area="data-science",
-        username="sabbir",
+        areas=["data-science", "computer-science"],
+        proper_nouns=["sabbir", "ahmed", "baltimore", "maryland"],
         anon=False,
         # build=True,
     )
-    print(obj.generate_tfidf())
+    print(obj.generate_tfidf(stop_words="english"))

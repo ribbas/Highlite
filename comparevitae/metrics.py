@@ -15,25 +15,29 @@ from .textutil import normalize_text
 
 class RateResume(object):
 
-    def __init__(self, path, area, username, pages=1, anon=True, build=False):
+    def __init__(self, path, areas, proper_nouns, pages=1, anon=True,
+                 build=False):
 
         self.path = path
-        self.area = area
-        self.username = username
+        self.areas = areas
+        self.corpus = []
+        self.test_resumes = []
+        self.proper_nouns = proper_nouns
         self.pages = pages
         self.anon = anon
 
-        self.resume_corpus = ResumeCorpus(
-            area=self.area,
-            pages=self.pages,
-            anon=self.anon,
-        )
-        if build:
-            self.resume_corpus.build()
+        for area in self.areas:
 
-        self.corpus = []
-        self.test_resumes = getresume_paths.lsfile(
-            getresume_paths.RAWCORPUS_DIR, self.area, "*.txt")
+            if build:
+                self.resume_corpus = ResumeCorpus(
+                    area=area,
+                    pages=self.pages,
+                    anon=self.anon,
+                )
+                self.resume_corpus.build()
+
+            self.test_resumes.extend(getresume_paths.lsfile(
+                getresume_paths.RAWCORPUS_DIR, area, "*.txt"))
 
         for resume_file_path in self.test_resumes:
 
@@ -44,20 +48,7 @@ class RateResume(object):
             i.replace(getresume_paths.RAWCORPUS_DIR, "")
             for i in self.test_resumes
         ]
-        self.resume = pdf_to_text(self.path)
-        # self.corpus = [
-        #     pdf_to_text("sample/science-tech-resumes2.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes3.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes4.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes5.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes6.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes7.pdf"),
-        #     pdf_to_text("sample/science-tech-resumes8.pdf"),
-        #     pdf_to_text("sample/ana.pdf"),
-        #     pdf_to_text("sample/sabbir2.pdf"),
-        #     pdf_to_text("sample/ana.pdf"),
-        #     pdf_to_text("sample/ana.pdf"),
-        # ]
+        self.resume = [pdf_to_text(self.path)]
 
     def build(self):
 
@@ -67,29 +58,28 @@ class RateResume(object):
     def generate_tfidf(self, max_feats=None, ngram_range=(1, 3),
                        stop_words=None):
 
-        vectorizer = TfidfVectorizer(
-            preprocessor=lambda x: normalize_text(x, username=self.username),
+        tfidf = TfidfVectorizer(
+            preprocessor=lambda x: normalize_text(
+                x, proper_nouns=self.proper_nouns),
             max_features=max_feats,
             ngram_range=ngram_range,
-            stop_words="english"
+            stop_words=stop_words,
         )
 
-        tfidf = vectorizer.fit_transform([self.resume] + self.corpus)
-        cos_sim = linear_kernel(tfidf[:1], tfidf).flatten()[1:]
+        tfidf_matrix = tfidf.fit_transform(self.resume + self.corpus)
+        cos_sim = linear_kernel(tfidf_matrix[:1], tfidf_matrix).flatten()[1:]
 
-        # x = np.asarray(self.test_resumes)
-        # print(x[cos_sim.argsort()[::-1]][:5])
-        # y = np.asarray(self.corpus)
-        # print(y[cos_sim.argsort()[::-1]][:5])
-        print(cos_sim.argsort()[::-1])
-        feats = vectorizer.get_feature_names()
+        x = np.asarray(self.test_resumes)
+        print(x[cos_sim.argsort()[::-1]][0])
+        y = np.asarray(self.corpus)
+        print(y[cos_sim.argsort()[::-1]][0])
+        print(cos_sim[cos_sim.argsort()[::-1]].shape)
+        feats = tfidf.get_feature_names()
 
-        doc = 17
-        feature_index = tfidf[doc, :].nonzero()[1]
+        feature_index = tfidf_matrix[0, :].nonzero()[1]
         tfidf_scores = zip(
-            feature_index, [tfidf[doc, g] for g in feature_index])
-        # print(tfidf_scores)
+            feature_index, (tfidf_matrix[0, i] for i in feature_index))
 
-        tfidf_scores = [(feats[i], s) for (i, s) in tfidf_scores]
+        tfidf_scores = ((feats[i], s) for (i, s) in tfidf_scores)
         for w, s in tfidf_scores:
             print w, s

@@ -26,10 +26,18 @@ def penn_to_wn(tag):
     return wn.NOUN
 
 
-def __normalizer(text, username):
+def normalize_text(content, proper_nouns):
 
-    words = text.split()
-    words = (word for word in words if username not in word)
+    norm_text = content.encode("ascii", "ignore").lower()
+
+    for punc in punctuation:
+        norm_text = norm_text.replace(punc, " ")
+
+    words = norm_text.split()
+
+    words = (
+        word for word in words if not any([x in word for x in proper_nouns])
+    )
     words = [word for word in words if not word.isdigit()]
     words = pos_tag(words)
     words = [
@@ -38,11 +46,8 @@ def __normalizer(text, username):
     ]
 
     for i, word in enumerate(words):
-        if any(p in word for p in ('(', ')')):
+        if any(p in word for p in ("(", ")")):
             words[i] = word[word.find("(") + 1:word.find(")")]
-
-        if words[i][-1] in punctuation and words[i][-2] not in punctuation:
-            words[i] = word.replace(word[-1], '')
 
     time_filtered = []
 
@@ -54,24 +59,4 @@ def __normalizer(text, username):
         except (TypeError, ValueError):
             time_filtered.append(word)
 
-    return time_filtered
-
-
-def normalize_text(content, username, sentences=False):
-
-    norm_text = content.encode("ascii", "ignore").lower()
-
-    for punc in punctuation:
-        norm_text = norm_text.replace(punc, "")
-
-    if sentences:
-
-        final_data = []
-        for sentence in norm_text.split("\n"):
-            final_data.append(" ".join(__normalizer(sentence, username)))
-
-        return final_data
-
-    final_data = __normalizer(norm_text, username)
-
-    return " ".join(filter(None, final_data))
+    return " ".join(filter(None, time_filtered))
