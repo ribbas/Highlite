@@ -20,4 +20,4 @@ if __name__ == "__main__":
     # recreate_doc()
     # x = pdf_to_html("sample/sabbir1.pdf")
     # recreate_doc(tfidf_scores_path="resume_tfidf.json", parsed_html=x)
-    find_index(1, 2, 3)
+    print(find_index(1, 2, 3))
