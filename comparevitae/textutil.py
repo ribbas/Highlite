@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import json
 from string import punctuation
 
+from bs4 import BeautifulSoup
 from dateutil import parser as date_parser
 from nltk import pos_tag
 from nltk.corpus import wordnet as wn
@@ -28,7 +29,7 @@ def penn_to_wn(tag):
     return wn.NOUN
 
 
-def normalize_text(content, ignore_words):
+def normalize_text(content, ignore_words=[]):
 
     lemma = WordNetLemmatizer()
     norm_text = content.encode("ascii", "ignore").lower()
@@ -65,16 +66,52 @@ def normalize_text(content, ignore_words):
     return " ".join(filter(None, time_filtered))
 
 
-def recreate_doc(tfidf_scores_path):
+def find_index(word, normalized_sent, sentence):
+
+    # sentence = "Certificate in Data Science"
+    # normalized_sent = "certificate in data science"
+    # word = "data science"
+
+    import difflib
+
+    word = "engineering communication"
+    sentence = "BSc. in Computer Engineering | Communications Track • Minor: Applied Mathematics"
+    normalized_sent = "bsc in computer engineering communication track minor apply mathematics"
+
+    if len(sentence) == len(normalized_sent):
+        start = normalized_sent.find(word)
+        end = start + len(word)
+        sentence = sentence.replace(
+            sentence[start:end], sentence[start:end] + "YOOOOOO")
+
+    else:
+        for i, s in enumerate(difflib.ndiff(word, sentence)):
+            if s[0] == ' ':
+                print(u'Nothing "{}" from position {}'.format(s[-1], i))
+            elif s[0] == '-':
+                print(u'Delete "{}" from position {}'.format(s[-1], i))
+            elif s[0] == '+':
+                print(u'Add "{}" to position {}'.format(s[-1], i))
+        print()
+
+
+def recreate_doc(tfidf_scores_path, parsed_html):
 
     tfidf_scores = {}
-    resume_text = ""
 
     with open(tfidf_scores_path) as tfidf_scores_file:
         tfidf_scores = json.load(tfidf_scores_file)
 
-    with open(PARSED_PATH) as resume_file:
-        resume_text = resume_file.read()
+    tfidf_terms = tfidf_scores["tfidf_scores"]
 
-    print tfidf_scores
-    print resume_text
+    parsed_html = " ".join(parsed_html).replace("&#160;", " ")
+    parsed_soup = BeautifulSoup(parsed_html, "html.parser")
+
+    for p_tag in parsed_soup.find_all("p"):
+        for term in tfidf_terms:
+            if term in normalize_text(p_tag.text):
+                print term, tfidf_terms[term], "<=>", normalize_text(p_tag.text), "<=>", p_tag.text
+                # p_tag.string = "YOOOOOOOOOOOO"
+
+    # print(parsed_soup.find_all("p"))
+    # return " ".join(i.text for i in parsed_soup.findAll("p"))

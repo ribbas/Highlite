@@ -7,3 +7,5 @@ from os import getcwd, path
 
 BASE_DIR = getcwd()
 PARSED_PATH = path.join(BASE_DIR, "resume.txt")
+HTML_CONVERTED_PATH = path.join(BASE_DIR, "resume.html")
+HTML_CONVERTED_OUT = path.join(BASE_DIR, "resume-html.html")
