@@ -122,8 +122,7 @@ def recreate_doc(tfidf_scores_path, parsed_html):
                     FAILED += 1
                 else:
                     SUCCESS += 1
-                # print term, tfidf_terms[term], "<=>", normalize_text(p_tag.text), "<=>", p_tag.text
-                # p_tag.string = "YOOOOOOOOOOOO"
+
     print float(FAILED) / SUCCESS * 100
     # print(parsed_soup.find_all("p"))
     # return " ".join(i.text for i in parsed_soup.findAll("p"))
