@@ -18,10 +18,6 @@ lemma = WordNetLemmatizer()
 stemmer = PorterStemmer()
 
 
-def color(str0, i=2):
-    return "\x1b[6;30;4{}m".format(i) + str0 + "\x1b[0m"
-
-
 def penn_to_wn(tag):
 
     if tag in ("JJ", "JJR", "JJS"):
@@ -72,14 +68,20 @@ def normalize_text(content, ignore_words=[]):
     return " ".join(filter(None, time_filtered))
 
 
-def find_index(word, normalized_sent, sentence, score):
+# TODO: LEARN HTML
+new_div_format = "<div style=\"background-color: rgba(255, 0, 0, {score})\">{text}</div>"
+
+
+def __find_index(word, normalized_sent, sentence, score):
 
     if len(sentence) == len(normalized_sent):
         start = normalized_sent.find(word)
         end = start + len(word)
         return sentence.replace(
             sentence[start:end],
-            "<div style=\"{}\">".format(score) + sentence[start:end] + "</div>"
+            new_div_format.format(
+                score=score, text=sentence[start:end]
+            )
         )
 
     re_str = " ".join(
@@ -87,13 +89,13 @@ def find_index(word, normalized_sent, sentence, score):
     ).replace(" ", ".*") + "([.-]|[^\s]+|[^\s]*?)"
     regex = re.compile(re_str, re.I)
     matches = regex.search(sentence)
-    # print(re_str)
+
     try:
         return sentence.replace(
             matches.group(),
-            # TODO: LEARN HTML
-            "<div style=\"background-color: rgba(255, 0, 0, {})\">".format(20 * score + 5) +
-            matches.group() + "</div>"
+            new_div_format.format(
+                score=score, text=matches.group()
+            )
         )
     except AttributeError:
         print "failed \x1b[3;31;40m" + re_str + "\x1b[0m"
@@ -101,13 +103,12 @@ def find_index(word, normalized_sent, sentence, score):
 
 def __merge_strings(final_str, version):
 
-    final_soup = BeautifulSoup(final_str, "html.parser")
-    version_div = BeautifulSoup(version, "html.parser").find("div")
+    soup = BeautifulSoup(final_str, "html.parser")
 
-    for fixed_div in final_soup.find_all("div"):
-        if not fixed_div.text == version_div.text:
+    for fixed_div in soup.find_all("div"):
+        if not fixed_div.text == version.text:
             return final_str.replace(
-                version_div.text, unicode(version_div)
+                version.text, unicode(version)
             )
 
     return final_str
@@ -117,17 +118,19 @@ def __merge_versions(grouped_found_terms):
 
     merged_divs = []
     for found_terms in grouped_found_terms:
+        found_terms = (
+            (i, BeautifulSoup(i, "html.parser").find("div"))
+            for i in found_terms
+        )  # list of pairs of the version and its div text
         found_terms = sorted(
-            found_terms,
-            key=lambda x: len(BeautifulSoup(x, "html.parser").find("div").text),
-            reverse=True
-        )
+            found_terms, key=lambda x: len(x[-1].text), reverse=True
+        )  # sort on the length of the div text to avoid issues with substrings
 
-        cursor = found_terms[0]
+        current_div = found_terms[0][0]  # version with the largest div text
         for i in xrange(1, len(found_terms)):
-            cursor = __merge_strings(cursor, found_terms[i])
+            current_div = __merge_strings(current_div, found_terms[i][-1])
 
-        merged_divs.append(cursor)
+        merged_divs.append(current_div)
 
     return merged_divs
 
@@ -135,8 +138,6 @@ def __merge_versions(grouped_found_terms):
 def recreate_doc(tfidf_scores_path, parsed_html):
 
     tfidf_scores = {}
-    FAILED = 0
-    SUCCESS = 0
 
     with open(tfidf_scores_path) as tfidf_scores_file:
         tfidf_scores = json.load(tfidf_scores_file)
@@ -149,13 +150,11 @@ def recreate_doc(tfidf_scores_path, parsed_html):
     tagged_divs = []
     for p_tag in parsed_soup.find_all("p"):
         for term in tfidf_terms:
-            if term in normalize_text(p_tag.text):
-                x = find_index(term, normalize_text(p_tag.text),
-                               p_tag.text, tfidf_terms[term])
-                if not x:
-                    FAILED += 1
-                else:
-                    SUCCESS += 1
+            normalize_p_tag = normalize_text(p_tag.text)
+            if term in normalize_p_tag:
+                x = __find_index(term, normalize_p_tag,
+                                 p_tag.text, tfidf_terms[term])
+                if x:
                     tagged_divs.append(x)
 
     grouped_found_terms = {}
@@ -174,4 +173,4 @@ def recreate_doc(tfidf_scores_path, parsed_html):
                 p_tag.insert(1, final_div)
                 break
 
-    print parsed_soup.prettify()
+    return parsed_soup.prettify().encode("utf-8")

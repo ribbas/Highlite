@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from comparevitae.metrics import RateResume
-from comparevitae.textutil import recreate_doc, find_index
+from comparevitae.textutil import recreate_doc
 from comparevitae.textio import pdf_to_html
 
 if __name__ == "__main__":
@@ -19,4 +19,6 @@ if __name__ == "__main__":
     # obj.get_score()
     # recreate_doc()
     x = pdf_to_html("sample/sabbir1.pdf")
-    recreate_doc(tfidf_scores_path="resume_tfidf.json", parsed_html=x)
+    new_doc = recreate_doc(tfidf_scores_path="resume_tfidf.json", parsed_html=x)
+
+    print new_doc
