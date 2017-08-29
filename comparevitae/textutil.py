@@ -18,6 +18,10 @@ lemma = WordNetLemmatizer()
 stemmer = PorterStemmer()
 
 
+def color(str0, i=2):
+    return "\x1b[6;30;4{}m".format(i) + str0 + "\x1b[0m"
+
+
 def penn_to_wn(tag):
 
     if tag in ("JJ", "JJR", "JJS"):
@@ -70,11 +74,6 @@ def normalize_text(content, ignore_words=[]):
 
 def find_index(word, normalized_sent, sentence, score):
 
-    # word = "expect"
-    # sentence = "| EXPECTED: MAY 2018"
-    # normalized_sent = "expect"
-
-    # print "\n", word, "<=>", normalized_sent, "<=>", sentence
     if len(sentence) == len(normalized_sent):
         start = normalized_sent.find(word)
         end = start + len(word)
@@ -92,10 +91,45 @@ def find_index(word, normalized_sent, sentence, score):
     try:
         return sentence.replace(
             matches.group(),
-            "<div style=\"{}\">".format(score) + matches.group() + "</div>"
+            # TODO: LEARN HTML
+            "<div style=\"background-color: rgba(255, 0, 0, {})\">".format(20 * score + 5) +
+            matches.group() + "</div>"
         )
     except AttributeError:
         print "failed \x1b[3;31;40m" + re_str + "\x1b[0m"
+
+
+def __merge_strings(final_str, version):
+
+    final_soup = BeautifulSoup(final_str, "html.parser")
+    version_div = BeautifulSoup(version, "html.parser").find("div")
+
+    for fixed_div in final_soup.find_all("div"):
+        if not fixed_div.text == version_div.text:
+            return final_str.replace(
+                version_div.text, unicode(version_div)
+            )
+
+    return final_str
+
+
+def __merge_versions(grouped_found_terms):
+
+    merged_divs = []
+    for found_terms in grouped_found_terms:
+        found_terms = sorted(
+            found_terms,
+            key=lambda x: len(BeautifulSoup(x, "html.parser").find("div").text),
+            reverse=True
+        )
+
+        cursor = found_terms[0]
+        for i in xrange(1, len(found_terms)):
+            cursor = __merge_strings(cursor, found_terms[i])
+
+        merged_divs.append(cursor)
+
+    return merged_divs
 
 
 def recreate_doc(tfidf_scores_path, parsed_html):
@@ -112,17 +146,32 @@ def recreate_doc(tfidf_scores_path, parsed_html):
     parsed_html = " ".join(parsed_html).replace("&#160;", " ")
     parsed_soup = BeautifulSoup(parsed_html, "html.parser")
 
+    tagged_divs = []
     for p_tag in parsed_soup.find_all("p"):
         for term in tfidf_terms:
             if term in normalize_text(p_tag.text):
                 x = find_index(term, normalize_text(p_tag.text),
                                p_tag.text, tfidf_terms[term])
-                print x
                 if not x:
                     FAILED += 1
                 else:
                     SUCCESS += 1
+                    tagged_divs.append(x)
 
-    print float(FAILED) / SUCCESS * 100
-    # print(parsed_soup.find_all("p"))
-    # return " ".join(i.text for i in parsed_soup.findAll("p"))
+    grouped_found_terms = {}
+    for elem in tagged_divs:
+        key = BeautifulSoup(elem, "html.parser").text
+        grouped_found_terms.setdefault(key, []).append(elem)
+
+    grouped_found_terms = grouped_found_terms.values()
+
+    final_divs = __merge_versions(grouped_found_terms)
+
+    for p_tag in parsed_soup.find_all("p"):
+        for final_div in final_divs:
+            final_div = BeautifulSoup(final_div, "html.parser")
+            if final_div.text == p_tag.text:
+                p_tag.insert(1, final_div)
+                break
+
+    print parsed_soup.prettify()
