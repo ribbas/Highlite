@@ -38,3 +38,9 @@ def pdf_to_html(file_path):
         )
 
     return parsed_html
+
+
+def save_html(content, file_path="resume.html"):
+
+    with open(file_path, "w") as html_file:
+        html_file.write(content)

@@ -3,6 +3,7 @@
 __pycache__/
 
 /data/
+/sample/
 corpus/
 rawdata/
 resume.txt
