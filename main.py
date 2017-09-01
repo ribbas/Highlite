@@ -8,18 +8,18 @@ from os import path
 from getresume.buildcorpus import ResumeCorpus
 from getresume.settings.paths import RAWCORPUS_DIR
 
-from comparevitae._version import __version__
-from comparevitae.customcorpus import CustomCorpus
-from comparevitae.metrics import ScoreDoc
-from comparevitae.recreate import ReconstructedHTML
-from comparevitae.textio import pdf_to_html, save_html
+from highlite._version import __version__
+from highlite.customcorpus import CustomCorpus
+from highlite.metrics import ScoreDoc
+from highlite.recreate import ReconstructedHTML
+from highlite.textio import pdf_to_html, save_html
 
 if __name__ == "__main__":
 
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="The main executable script for compare-vitae",
+        description="The main executable script for highlite",
         add_help=False
     )
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
                         default=argparse.SUPPRESS,
                         help="| Show this help message and exit")
     parser.add_argument("-v", "--version", action="version",
-                        version="compare-vitae {}".format(__version__),
+                        version="highlite {}".format(__version__),
                         help="| Show program's version and exit")
 
     # positional arguments

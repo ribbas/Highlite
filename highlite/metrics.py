@@ -5,7 +5,6 @@ from __future__ import absolute_import, unicode_literals
 
 import json
 from os import path
-import sys
 
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
