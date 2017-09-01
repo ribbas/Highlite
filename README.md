@@ -1,1 +1,1 @@
-# rate-my-resume
+# highlite
