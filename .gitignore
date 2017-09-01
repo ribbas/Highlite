@@ -1,9 +1,11 @@
+# Python cache and environments
 .venv*/
 *.pyc
 __pycache__/
 
+# Temporary files and directories
 /data/
 /sample/
 corpus/
 rawdata/
-resume.txt
+resume*

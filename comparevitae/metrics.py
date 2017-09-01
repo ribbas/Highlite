@@ -4,21 +4,20 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
+from os import path
+import sys
 
-from getresume.buildcorpus import ResumeCorpus
-from getresume.settings import paths as getresume_paths
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
-from .textio import pdf_to_text
+from .textio import lsfile, pdf_to_text
 from .textutil import normalize_text
 
 
-class RateResume(object):
+class ScoreDoc(object):
 
-    def __init__(self, path, areas, ignore_words=[], pages=1, anon=True,
-                 build=False):
+    def __init__(self, doc_path, areas, corpus_path, ignore_words=[]):
 
         self.ignore_words = ignore_words
 
@@ -28,28 +27,21 @@ class RateResume(object):
         self.feature_names = None
 
         for area in areas:
+            if not path.exists(path.join(corpus_path, area)):
+                raise IOError("No files found in corpus \"{}\"".format(area))
 
-            if build:
-                resume_corpus = ResumeCorpus(
-                    area=area,
-                    pages=pages,
-                    anon=anon,
-                )
-                resume_corpus.build()
+            self.train_resumes.extend(lsfile(corpus_path, area, "*.txt"))
 
-            self.train_resumes.extend(getresume_paths.lsfile(
-                getresume_paths.RAWCORPUS_DIR, area, "*.txt"))
-
+        # print(self.train_resumes)
         for resume_file_path in self.train_resumes:
-
             with open(resume_file_path) as resume_file:
                 self.corpus.append(resume_file.read())
 
         self.train_resumes = [
-            i.replace(getresume_paths.RAWCORPUS_DIR, "")
-            for i in self.train_resumes
+            i.replace(corpus_path, "") for i in self.train_resumes
         ]
-        self.resume = [pdf_to_text(path)]
+
+        self.resume = [pdf_to_text(doc_path)]
 
     def generate_tfidf(self, max_feats=None, ngram_range=(1, 3),
                        stop_words=None):

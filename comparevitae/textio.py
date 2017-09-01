@@ -5,23 +5,27 @@
 """parse
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
-import subprocess
+from glob import glob
 from os import path
+import subprocess
 
 from .settings import HTML_CONVERTED_OUT, HTML_CONVERTED_PATH, PARSED_PATH
 
 
-def pdf_to_text(file_path):
+def pdf_to_text(file_path, parsed_path=PARSED_PATH):
 
-    subprocess.call(["pdftotext", file_path, PARSED_PATH])
+    print("Parsing PDF...", end=" ")
 
-    with open(PARSED_PATH) as parsed_file:
+    subprocess.call(["pdftotext", file_path, parsed_path])
+
+    with open(parsed_path) as parsed_file:
         parsed_text = (
             line.decode("utf-8").strip() for line in parsed_file.readlines()
         )
 
+    print("Done")
     return " ".join(parsed_text)
 
 
@@ -44,3 +48,8 @@ def save_html(content, file_path="resume.html"):
 
     with open(file_path, "w") as html_file:
         html_file.write(content)
+
+
+def lsfile(*data_dir):
+
+    return glob(path.join(*data_dir))

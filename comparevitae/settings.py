@@ -10,3 +10,5 @@ PARSED_PATH = path.join(BASE_DIR, "resume.txt")
 HTML_CONVERTED_PATH = path.join(BASE_DIR, "resume.html")
 HTML_CONVERTED_OUT = path.join(BASE_DIR, "resume-html.html")
 HEATMAP_CSS_PATH = path.join(BASE_DIR, "static", "heatmap.css")
+
+RAWCORPUS_DIR = path.join(BASE_DIR, "data", "rawcorpus")

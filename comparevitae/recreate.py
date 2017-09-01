@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import json
 import re
 
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 from nltk.stem.porter import PorterStemmer
 import numpy as np
 
@@ -31,7 +31,7 @@ class ReconstructedHTML(object):
         self.parsed_soup = BeautifulSoup(parsed_html, "html.parser")
         extra_css = self.parsed_soup.new_tag("style", type="text/css")
         with open(HEATMAP_CSS_PATH) as css_file:
-            extra_css.string = NavigableString(css_file.read())
+            extra_css.string = unicode(css_file.read())
         self.parsed_soup.head.append(extra_css)
         self.stemmer = PorterStemmer()
 
@@ -163,5 +163,7 @@ class ReconstructedHTML(object):
                     p_tag.string = ""
                     p_tag.insert(0, final_span)
                     break
+
+    def get_new_html(self):
 
         return self.parsed_soup.prettify().replace("&gt", ">").encode("utf-8")
