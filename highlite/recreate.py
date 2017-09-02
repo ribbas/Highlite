@@ -17,10 +17,10 @@ from .textutil import normalize_text
 
 class ReconstructedHTML(object):
 
-    def __init__(self, tfidf_scores_path, parsed_html):
+    def __init__(self, results_path, parsed_html):
 
         tfidf_scores = {}
-        with open(tfidf_scores_path) as tfidf_scores_file:
+        with open(results_path) as tfidf_scores_file:
             tfidf_scores = json.load(tfidf_scores_file)
 
         self.tfidf_terms = tfidf_scores["tfidf_scores"]
@@ -37,7 +37,6 @@ class ReconstructedHTML(object):
         self.stemmer = PorterStemmer()
 
         self.new_span_format = "<span class=\"{score}\">{text}</span>"
-        self.new_html = ""
 
     def __span_class(self, score):
 

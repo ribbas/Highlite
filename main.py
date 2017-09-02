@@ -12,6 +12,7 @@ from highlite.customcorpus import CustomCorpus
 from highlite.metrics import ScoreDoc
 from highlite.recreate import ReconstructedHTML
 from highlite.settings import RAWCORPUS_DIR
+from highlite.stats import Summary
 from highlite.textio import pdf_to_html, save_html
 
 if __name__ == "__main__":
@@ -62,6 +63,9 @@ if __name__ == "__main__":
     parser.add_argument("--recreate", action="store_true",
                         help="| Create HTML output of the scored document")
 
+    parser.add_argument("--stats", action="store_true",
+                        help="| Create HTML output of the scored document")
+
     # parse arguments to pass into function
     args = parser.parse_args()
 
@@ -105,9 +109,15 @@ if __name__ == "__main__":
     if args.recreate:
         parsed_html = pdf_to_html(args.input_doc)
         new_doc_obj = ReconstructedHTML(
-            tfidf_scores_path="resume_tfidf.json", parsed_html=parsed_html)
+            results_path="resume_scores.json", parsed_html=parsed_html)
 
         new_doc_obj.recreate_doc()
         new_doc = new_doc_obj.get_new_html()
 
         save_html(new_doc)
+
+    if args.stats:
+
+        results_obj = Summary(results_path="resume_scores.json")
+        results_obj.get_top_resumes()
+        results_obj.get_tfidf()

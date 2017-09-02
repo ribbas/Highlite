@@ -55,7 +55,7 @@ class ScoreDoc(object):
         self.tfidf_matrix = tfidf.fit_transform(self.resume + self.corpus)
         self.feature_names = tfidf.get_feature_names()
 
-    def get_score(self, filename="resume_tfidf", top=5):
+    def get_score(self, filename="resume_scores", top=5):
 
         cos_sim = linear_kernel(
             self.tfidf_matrix[:1], self.tfidf_matrix).flatten()[1:]
