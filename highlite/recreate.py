@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 import json
 import re
@@ -9,6 +9,7 @@ import re
 from bs4 import BeautifulSoup
 from nltk.stem.porter import PorterStemmer
 import numpy as np
+from tqdm import trange
 
 from .settings import HEATMAP_CSS_PATH
 from .textutil import normalize_text
@@ -76,7 +77,9 @@ class ReconstructedHTML(object):
                     text=matches.group()
                 )
             )
+
         except AttributeError:
+
             try:
                 re_str = " ".join(
                     self.stemmer.stem(i) for i in word.split()
@@ -92,7 +95,7 @@ class ReconstructedHTML(object):
                 )
 
             except AttributeError:
-                print "failed \x1b[3;31;40m" + re_str + "\x1b[0m"
+                pass
 
     @staticmethod
     def __merge_strings(final_str, version):
@@ -136,16 +139,22 @@ class ReconstructedHTML(object):
     def recreate_doc(self):
 
         tagged_spans = []
-        for p_tag in self.parsed_soup.find_all("p"):
+        failure = 0
+        p_tags = self.parsed_soup.find_all("p")
+        p_tags_len = len(p_tags)
+        progress = trange(p_tags_len, desc="Tagging document", leave=True)
+        for p_tag in progress:
             for term in self.tfidf_terms:
-                normalize_p_tag = normalize_text(p_tag.text)
+                normalize_p_tag = normalize_text(p_tags[p_tag].text)
                 if term in normalize_p_tag:
                     tagged_span = self.__find_index(
                         term, normalize_p_tag,
-                        p_tag.text, self.tfidf_terms[term]
+                        p_tags[p_tag].text, self.tfidf_terms[term]
                     )
                     if tagged_span:
                         tagged_spans.append(tagged_span)
+                    else:
+                        failure += 1
 
         grouped_found_terms = {}
         for tagged_span in tagged_spans:
@@ -156,13 +165,15 @@ class ReconstructedHTML(object):
 
         final_spans = self.__merge_versions(grouped_found_terms)
 
-        for p_tag in self.parsed_soup.find_all("p"):
+        for p_tag in progress:
             for final_span in final_spans:
                 final_span = BeautifulSoup(final_span, "html.parser")
-                if final_span.text == p_tag.text:
-                    p_tag.string = ""
-                    p_tag.insert(0, final_span)
+                if final_span.text == p_tags[p_tag].text:
+                    p_tags[p_tag].string = ""
+                    p_tags[p_tag].insert(0, final_span)
                     break
+
+        print("%.2f%% content lost." % (float(failure) / p_tags_len * 100))
 
     def get_new_html(self):
 

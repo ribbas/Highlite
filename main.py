@@ -62,9 +62,6 @@ if __name__ == "__main__":
     parser.add_argument("--recreate", action="store_true",
                         help="| Create HTML output of the scored document")
 
-    parser.add_argument("--save", action="store_true",
-                        help="| Save new HTML file")
-
     # parse arguments to pass into function
     args = parser.parse_args()
 
@@ -113,5 +110,4 @@ if __name__ == "__main__":
         new_doc_obj.recreate_doc()
         new_doc = new_doc_obj.get_new_html()
 
-        if args.save:
-            save_html(new_doc)
+        save_html(new_doc)

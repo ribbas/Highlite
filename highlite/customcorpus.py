@@ -37,3 +37,5 @@ class CustomCorpus(object):
                         )
                     )
                 )
+
+        print("'%s' corpus built\n" % self.area)

@@ -73,7 +73,7 @@ class ScoreDoc(object):
             {
                 "index": i,
                 "area": j.split("/")[1],
-                "url": j.split("/")[-1],
+                "name": j.split("/")[-1],
             } for i, j in enumerate(resume_names)
         ]
 
