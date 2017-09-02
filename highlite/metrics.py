@@ -31,7 +31,6 @@ class ScoreDoc(object):
 
             self.train_resumes.extend(lsfile(corpus_path, area, "*.txt"))
 
-        # print(self.train_resumes)
         for resume_file_path in self.train_resumes:
             with open(resume_file_path) as resume_file:
                 self.corpus.append(resume_file.read())

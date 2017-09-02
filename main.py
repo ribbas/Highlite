@@ -3,20 +3,18 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import argparse
 from os import path
-
-from getresume.buildcorpus import ResumeCorpus
-from getresume.settings.paths import RAWCORPUS_DIR
+import sys
 
 from highlite._version import __version__
 from highlite.customcorpus import CustomCorpus
 from highlite.metrics import ScoreDoc
 from highlite.recreate import ReconstructedHTML
+from highlite.settings import RAWCORPUS_DIR
 from highlite.textio import pdf_to_html, save_html
 
 if __name__ == "__main__":
-
-    import argparse
 
     parser = argparse.ArgumentParser(
         description="The main executable script for highlite",
@@ -37,7 +35,7 @@ if __name__ == "__main__":
     parser.add_argument("input_doc", metavar="<PATH TO INPUT FILE>",
                         help="| Input document for analysis")
 
-    parser.add_argument("areas", nargs="+", metavar="<'-' DELIMITED AREA>",
+    parser.add_argument("areas", nargs="+", metavar="<LIST OF AREAS>",
                         help="| Disciplines to analyze against")
 
     # optional arguments
@@ -54,8 +52,8 @@ if __name__ == "__main__":
     parser.add_argument("--dir", default="sample", metavar="<PATH>",
                         help="| Path of input sample files (custom)")
 
-    # parser.add_argument("--dir", default="sample", metavar="<PATH>",
-    #                     help="| Path of input sample files (custom)")
+    parser.add_argument("--input_t", default="pdf", metavar="<TYPE>",
+                        help="| Type of input sample files (custom)")
 
     # options for scoring document
     parser.add_argument("--score", action="store_true",
@@ -69,22 +67,31 @@ if __name__ == "__main__":
 
     # parse arguments to pass into function
     args = parser.parse_args()
-    print args
 
     if args.build == "getresume":
-        for area in args.areas:
-            resume_corpus = ResumeCorpus(
-                area=area,
-                pages=args.pages,
-                anon=bool(args.anon),
-            )
-            resume_corpus.build()
+
+        try:
+
+            from getresume.buildcorpus import ResumeCorpus
+
+            for area in args.areas:
+                resume_corpus = ResumeCorpus(
+                    area=area,
+                    pages=args.pages,
+                    anon=bool(args.anon),
+                )
+                resume_corpus.build()
+
+        except ImportError:
+            sys.exit("getresume is not installed, try building a custom corpus")
 
     elif args.build == "custom" and path.exists(args.dir):
+
         for area in args.areas:
             resume_corpus = CustomCorpus(
                 area=area,
-                path_to_dir=args.dir
+                path_to_dir=args.dir,
+                input_type=args.input_t
             )
             resume_corpus.build()
 

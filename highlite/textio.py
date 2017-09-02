@@ -16,7 +16,7 @@ from .settings import HTML_CONVERTED_OUT, HTML_CONVERTED_PATH, PARSED_PATH
 
 def pdf_to_text(file_path, parsed_path=PARSED_PATH):
 
-    print("Parsing PDF...", end=" ")
+    print("Parsing \'%s\'..." % path.basename(file_path), end=" ")
 
     subprocess.call(["pdftotext", file_path, parsed_path])
 
