@@ -6,6 +6,8 @@ from __future__ import absolute_import, unicode_literals
 import json
 from pprint import pprint
 
+from scipy import stats
+
 
 class Summary(object):
 
@@ -26,3 +28,14 @@ class Summary(object):
             key=lambda x: x[-1], reverse=True
         )
         pprint(tfidf_scores, indent=2)
+
+    def get_tfidf_summary(self):
+
+        tfidf_stats = stats.describe(self.results["tfidf_scores"].values())
+
+        pprint({
+            "min": tfidf_stats.minmax[0],
+            "max": tfidf_stats.minmax[-1],
+            "mean": tfidf_stats.mean,
+            "variance": tfidf_stats.variance,
+        })
