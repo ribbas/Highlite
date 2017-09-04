@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
+from .settings import BUZZWORDS
 from .textio import lsfile, pdf_to_text
 from .textutil import normalize_text
 
@@ -41,6 +42,10 @@ class ScoreDoc(object):
 
         self.resume = [pdf_to_text(doc_path)]
 
+        self.buzzwords = {}
+        with open(BUZZWORDS) as buzzwords_file:
+            self.buzzwords = json.load(buzzwords_file)
+
     def generate_tfidf(self, max_feats=None, ngram_range=(1, 3),
                        stop_words=None):
 
@@ -68,6 +73,11 @@ class ScoreDoc(object):
         tfidf_scores_features = dict(
             (self.feature_names[i], s) for (i, s) in tfidf_scores
         )
+        buzzwords = dict(
+            (self.feature_names[i], self.is_buzzword(self.feature_names[i]))
+            for (i, _) in tfidf_scores
+        )
+        buzzwords = {k: v for k, v in buzzwords.iteritems() if v}
         resume_names = list(resume_names[top_indicies])
         resume_names = [
             {
@@ -80,7 +90,16 @@ class ScoreDoc(object):
         data = {
             "top_resumes": resume_names,
             "tfidf_scores": tfidf_scores_features,
+            "buzzwords": buzzwords,
         }
 
         with open(filename + ".json", "w") as out_file:
             json.dump(data, out_file)
+
+    def is_buzzword(self, term):
+
+        for category, buzzwords_list in self.buzzwords.items():
+            for buzzword in buzzwords_list:
+                buzzword = buzzword.split() + [buzzword]
+                if term in buzzword:
+                    return category

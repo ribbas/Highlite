@@ -7,8 +7,8 @@ import argparse
 from os import path
 import sys
 
-from highlite import _version, customcorpus, metrics, recreate, settings, \
-    stats, textio
+from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
+    settings, stats, textio
 
 if __name__ == "__main__":
 
@@ -61,6 +61,9 @@ if __name__ == "__main__":
 
     parser.add_argument("--stats", action="store_true",
                         help="| Get summary of resume analysis")
+
+    parser.add_argument("--buzzwords", action="store_true",
+                        help="| Generate buzzwords")
 
     # parse arguments to pass into function
     args = parser.parse_args()
@@ -118,3 +121,7 @@ if __name__ == "__main__":
         results_obj.get_top_resumes()
         results_obj.get_tfidf()
         results_obj.get_tfidf_summary()
+        results_obj.get_buzzwords()
+
+    if args.buzzwords:
+        buzzwords.generate_buzzwords()

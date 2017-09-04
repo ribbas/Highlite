@@ -29,6 +29,14 @@ class Summary(object):
         )
         pprint(tfidf_scores, indent=2)
 
+    def get_buzzwords(self):
+
+        buzzwords = sorted(
+            self.results["buzzwords"].items(),
+            key=lambda x: x[-1], reverse=True
+        )
+        pprint(buzzwords, indent=2)
+
     def get_tfidf_summary(self):
 
         tfidf_stats = stats.describe(self.results["tfidf_scores"].values())
