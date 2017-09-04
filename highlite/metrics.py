@@ -65,19 +65,8 @@ class ScoreDoc(object):
         cos_sim = linear_kernel(
             self.tfidf_matrix[:1], self.tfidf_matrix).flatten()[1:]
         top_indicies = cos_sim.argsort()[:-(top + 1):-1]
+
         resume_names = np.asarray(self.train_resumes)
-        feature_index = self.tfidf_matrix[0].nonzero()[1]
-        tfidf_scores = zip(
-            feature_index, (self.tfidf_matrix[0, i] for i in feature_index)
-        )
-        tfidf_scores_features = dict(
-            (self.feature_names[i], s) for (i, s) in tfidf_scores
-        )
-        buzzwords = dict(
-            (self.feature_names[i], self.is_buzzword(self.feature_names[i]))
-            for (i, _) in tfidf_scores
-        )
-        buzzwords = {k: v for k, v in buzzwords.iteritems() if v}
         resume_names = list(resume_names[top_indicies])
         resume_names = [
             {
@@ -86,6 +75,20 @@ class ScoreDoc(object):
                 "name": j.split("/")[-1],
             } for i, j in enumerate(resume_names)
         ]
+
+        feature_index = self.tfidf_matrix[0].nonzero()[1]
+        tfidf_scores = zip(
+            feature_index, (self.tfidf_matrix[0, i] for i in feature_index)
+        )
+        tfidf_scores_features = dict(
+            (self.feature_names[i], s) for (i, s) in tfidf_scores
+        )
+
+        buzzwords = dict(
+            (self.feature_names[i], self.is_buzzword(self.feature_names[i]))
+            for (i, _) in tfidf_scores
+        )
+        buzzwords = {k: v for k, v in buzzwords.iteritems() if v}
 
         data = {
             "top_resumes": resume_names,

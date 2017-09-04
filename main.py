@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
 from os import path
+from pprint import pprint
 import sys
 
 from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="version",
                         version="highlite {}".format(
                             _version.__version__),
-                        help="| Show program's version and exit")
+                        help="| Show version and exit")
 
     # positional arguments
     parser.add_argument("input_doc", metavar="<PATH TO INPUT FILE>",
@@ -43,18 +44,34 @@ if __name__ == "__main__":
     parser.add_argument("--anon", action="store_true",
                         help="| Anonymize IP (getresume)")
 
-    parser.add_argument("--pages", default=0, metavar="INT",
+    parser.add_argument("--pages", default=0, metavar="N",
                         type=int, help="| Search pages to crawl (getresume)")
 
-    parser.add_argument("--dir", default="sample", metavar="<PATH>",
+    parser.add_argument("--dir", default="", metavar="PATH",
                         help="| Path of input sample files (custom)")
 
-    parser.add_argument("--input_t", default="pdf", metavar="<TYPE>",
+    parser.add_argument("--input_t", default="pdf", metavar="TYPE",
                         help="| Type of input sample files (custom)")
 
     # options for scoring document
     parser.add_argument("--score", action="store_true",
                         help="| Score input document")
+
+    parser.add_argument("--ignore_words", nargs="+", metavar="<LIST OF WORDS>",
+                        help="| List of words to ignore in scoring document")
+
+    parser.add_argument(
+        "--max_feats", default=None, metavar="N", type=int,
+        help="| Maximum number of features for the TF-IDF vectorizer"
+    )
+
+    parser.add_argument(
+        "--ngram_range", default=(1, 3), metavar="N", nargs=2,
+        help="| n-grams range for the TF-IDF vectorizer"
+    )
+
+    parser.add_argument("--stop_words_eng", action="store_true",
+                        help="| Stopwords for the TF-IDF vectorizer")
 
     parser.add_argument("--recreate", action="store_true",
                         help="| Create HTML output of the scored document")
@@ -62,11 +79,18 @@ if __name__ == "__main__":
     parser.add_argument("--stats", action="store_true",
                         help="| Get summary of resume analysis")
 
+    parser.add_argument("--preview", action="store_true",
+                        help="| Preview the tagged document")
+
+    # extra options
     parser.add_argument("--buzzwords", action="store_true",
-                        help="| Generate buzzwords")
+                        help="| Update buzzwords corpus")
 
     # parse arguments to pass into function
     args = parser.parse_args()
+
+    print("\x1b[1;31;40mParameters chosen:\x1b[0m")
+    pprint(args.__dict__, indent=2)
 
     if args.build == "getresume":
 
@@ -99,10 +123,14 @@ if __name__ == "__main__":
         obj = metrics.ScoreDoc(
             doc_path=args.input_doc,
             areas=args.areas,
-            ignore_words=["baltimore", "md", "sabbir", "ahmed"],
+            ignore_words=args.ignore_words,
             corpus_path=settings.RAWCORPUS_DIR,
         )
-        obj.generate_tfidf(stop_words="english")
+        obj.generate_tfidf(
+            max_feats=args.max_feats,
+            ngram_range=args.ngram_range,
+            stop_words="english" if args.stop_words else None,
+        )
         obj.get_score()
 
     if args.recreate:
@@ -125,3 +153,8 @@ if __name__ == "__main__":
 
     if args.buzzwords:
         buzzwords.generate_buzzwords()
+
+    if args.preview:
+
+        import webbrowser
+        webbrowser.get().open(settings.HTML_CONVERTED_PATH)

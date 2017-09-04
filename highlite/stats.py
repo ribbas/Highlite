@@ -31,11 +31,9 @@ class Summary(object):
 
     def get_buzzwords(self):
 
-        buzzwords = sorted(
-            self.results["buzzwords"].items(),
-            key=lambda x: x[-1], reverse=True
-        )
-        pprint(buzzwords, indent=2)
+        buzzwords = self.results["buzzwords"].values()
+        buzzwords_summary = {i: buzzwords.count(i) for i in buzzwords}
+        pprint(buzzwords_summary, indent=2)
 
     def get_tfidf_summary(self):
 
