@@ -19,6 +19,13 @@ ifndef PASSWORD
 	$(error PASSWORD is not provided)
 endif
 
+EXTRA_INCLUDES:=$(wildcard getresume.mk)
+# includes rules for installing getresume
+ifneq ($(strip ${EXTRA_INCLUDES}),)
+  contents:=$(shell echo including extra rules $(EXTRA_INCLUDES))
+  include $(EXTRA_INCLUDES)
+endif
+
 
 .PHONY: installenv
 installenv:
@@ -32,10 +39,17 @@ init: req-venv
 	@pip install -U pip && pip install -r ${REQ}
 
 
+.PHONY: init-getresume
+init-getresume: req-venv req-pass
+	# installs getresume and configures Tor and Privoxy
+	echo $(contents)
+	@make getresume PASSWORD=${PASSWORD}
+
+
 .PHONY: update
 update: req-venv
 	# update PIP requirements
-	@pip freeze | grep -v "pkg-resources" > ${REQ}
+	@pip freeze | grep -Eiv "pkg-resources|getresume" > ${REQ}
 
 
 .PHONY: sdist
@@ -58,7 +72,7 @@ clean-all: clean reset
 clean:
 	# clean out cache and temporary files
 	@find . \( -name "*.pyc" -type f -o -name "__pycache__" -type d \) -delete
-	@rm resume*
+	@find . -name "resume*" -type f -delete
 
 
 .PHONY: reset

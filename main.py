@@ -14,7 +14,7 @@ from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="The main executable script for highlite",
+        description="The main executable script for Highlite",
         add_help=False
     )
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
                         default=argparse.SUPPRESS,
                         help="| Show this help message and exit")
     parser.add_argument("-v", "--version", action="version",
-                        version="highlite {}".format(
+                        version="Highlite {}".format(
                             _version.__version__),
                         help="| Show version and exit")
 
