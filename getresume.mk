@@ -1,5 +1,5 @@
 # Extra rules for installing getresume and configuring Tor and Privoxy
-SECRET="getresume/settings/secret"
+SECRET="getresume/getresume/settings/secret"
 TARFILE="getresume.tar.gz"
 
 .PHONY: getresume
@@ -10,6 +10,7 @@ getresume:
 	@rm -rf getresume
 	@tar -xvf ${TARFILE}
 	@mv getresume-* getresume
+	@echo -n ${PASSWORD} > ${SECRET}
 	@python getresume/setup.py install
 
 	# hash password and append it to torrc
