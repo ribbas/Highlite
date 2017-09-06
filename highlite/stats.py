@@ -19,20 +19,23 @@ class Summary(object):
 
     def get_top_resumes(self):
 
-        print("\x1b[1;34;40mTop resumes:\x1b[0m")
+        print("\x1b[1;34;40mTop closest documents:\x1b[0m")
         pprint(self.results["top_resumes"], indent=2)
 
     def get_tfidf(self):
 
-        tfidf_scores = sorted(
-            self.results["tfidf_scores"].items(),
+        top_tfidf_scores = self.results["tfidf_scores"].values()
+        top_tfidf_scores = sorted(
+            set(i for i in top_tfidf_scores), reverse=True)[:5]
+
+        top_tfidf_terms = self.results["tfidf_scores"].items()
+        top_tfidf_terms = sorted(
+            (i for i in top_tfidf_terms if i[-1] in top_tfidf_scores),
             key=lambda x: x[-1], reverse=True
         )
 
-        top_tfidf_scores = tfidf_scores[:5]
-
         print("\x1b[1;34;40mTop TF-IDF scored terms:\x1b[0m")
-        pprint(top_tfidf_scores, indent=2)
+        pprint(top_tfidf_terms, indent=2)
 
     def get_buzzwords(self):
 

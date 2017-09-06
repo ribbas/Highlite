@@ -2,9 +2,13 @@
 
 A simple command line tool that compares an input document to several tagged corpora for cosine similarity and other analyses.
 
-## Quick start
+## Quick Start
 
-Once installed, Highlight can be executed with the required data. 
+Once installed, Highlight can be executed with the required data.
+
+### Basic Usage
+
+`python highlite.py john_doe_resume.pdf computer-science data-science computer-engineering baseball-coach --ignore_words john doe california ca --use_stop_words --score --recreate --stats --preview`
 
 ## Installation
 

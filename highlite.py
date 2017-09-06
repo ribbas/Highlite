@@ -79,8 +79,10 @@ if __name__ == "__main__":
     parser.add_argument("--stats", action="store_true",
                         help="| Get summary of resume analysis")
 
-    parser.add_argument("--preview", action="store_true",
-                        help="| Preview the tagged document")
+    parser.add_argument(
+        "--preview", action="store_true",
+        help="| Opens up the tagged document of the browser for preview"
+    )
 
     # extra options
     parser.add_argument("--buzzwords", action="store_true",
