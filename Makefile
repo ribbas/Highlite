@@ -1,30 +1,9 @@
 # Makefile to ease trivial tasks for the project
 
+include conditions.mk
 VENV="$(shell find . -name ".*env")"
 INVENV="$(shell which python | grep ${VENV})"
 REQ="requirements.txt"
-
-
-.PHONY: req-venv
-# checks if virtual environment is activated and exits if it isn't 
-req-venv:
-ifeq (${INVENV}, "")
-	$(error Virtual environment not activated)
-endif
-
-.PHONY: req-pass
-# checks if PASSWORD is provided and exits if it isn't
-req-pass:
-ifndef PASSWORD
-	$(error PASSWORD is not provided)
-endif
-
-EXTRA_INCLUDES:=$(wildcard getresume.mk)
-# includes rules for installing getresume
-ifneq ($(strip ${EXTRA_INCLUDES}),)
-  contents:=$(shell echo including extra rules $(EXTRA_INCLUDES))
-  include $(EXTRA_INCLUDES)
-endif
 
 
 .PHONY: installenv
@@ -42,7 +21,7 @@ init: req-venv
 .PHONY: init-getresume
 init-getresume: req-venv req-pass
 	# installs getresume and configures Tor and Privoxy
-	echo $(contents)
+	@echo $(contents)
 	@make getresume PASSWORD=${PASSWORD}
 
 
@@ -50,12 +29,6 @@ init-getresume: req-venv req-pass
 update: req-venv
 	# update PIP requirements
 	@pip freeze | grep -Eiv "pkg-resources|getresume" > ${REQ}
-
-
-.PHONY: sdist
-sdist: req-venv
-	# compile source distribution
-	@python setup.py sdist
 
 
 .PHONY: test

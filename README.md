@@ -4,7 +4,7 @@ A simple command line tool that compares an input document to several tagged cor
 
 ## Installation
 
-A Makefile has been provided for installation. 
+A Makefile has been provided for installation. <br>`make installenv` will create and set up a virtual environment if none has been created. <br>`make init` will install all the requirements if a virtual environment has been created and sourced. <br>`make init-getresume PASSWORD=your_password` will also install getresume if access is provided.
 
 ## getresume
 
