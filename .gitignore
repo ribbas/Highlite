@@ -7,6 +7,7 @@ __pycache__/
 /secret
 /data/
 /sample/
+/sample_input/
 corpus/
 rawdata/
 resume*

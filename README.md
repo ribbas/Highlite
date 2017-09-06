@@ -2,9 +2,31 @@
 
 A simple command line tool that compares an input document to several tagged corpora for cosine similarity and other analyses.
 
+## Quick start
+
+Once installed, Highlight can be executed with the required data. 
+
 ## Installation
 
-A Makefile has been provided for installation. <br>`make installenv` will create and set up a virtual environment if none has been created. <br>`make init` will install all the requirements if a virtual environment has been created and sourced. <br>`make init-getresume PASSWORD=your_password` will also install getresume if access is provided.
+A Makefile has been provided for installation.
+- `make installenv` will create and set up a virtual environment if none has been created.
+- `make init` will install all the requirements if a virtual environment has been created and sourced.
+- `make init-getresume PASSWORD=your_password` will also install getresume if access is provided.
+
+Additional rules are provided for development:
+- `make update` updates the Python requirements
+- `make clean` removes temporary files created
+- `make reset` removes all scraped data and built corpus
+- `make clean-all` invokes `make clean` and `make reset`
+
+Tests are provided through the Makefile as well with `make test`.
+
+### Dependencies
+
+- Python 2.7, virtualenv, PIP and the packages included in `requirements.txt`
+- [Tor](https://www.torproject.org/projects/torbrowser.html.en) (if getresume is included)
+- [Privoxy](https://www.privoxy.org/) (if getresume is included)
+
 
 ## getresume
 

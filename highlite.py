@@ -70,7 +70,7 @@ if __name__ == "__main__":
         help="| n-grams range for the TF-IDF vectorizer"
     )
 
-    parser.add_argument("--stop_words_eng", action="store_true",
+    parser.add_argument("--use_stop_words", action="store_true",
                         help="| Stopwords for the TF-IDF vectorizer")
 
     parser.add_argument("--recreate", action="store_true",
@@ -88,6 +88,7 @@ if __name__ == "__main__":
 
     # parse arguments to pass into function
     args = parser.parse_args()
+    results_path = "resume_scores.json"
 
     print("\x1b[1;31;40mParameters chosen:\x1b[0m")
     pprint(args.__dict__, indent=2)
@@ -107,7 +108,8 @@ if __name__ == "__main__":
                 resume_corpus.build()
 
         except ImportError:
-            sys.exit("getresume is not installed, try building a custom corpus")
+            raise ImportError(
+                "getresume is not installed, try building a custom corpus")
 
     elif args.build == "custom" and path.exists(args.dir):
 
@@ -129,14 +131,19 @@ if __name__ == "__main__":
         obj.generate_tfidf(
             max_feats=args.max_feats,
             ngram_range=args.ngram_range,
-            stop_words="english" if args.stop_words else None,
+            stop_words="english" if args.use_stop_words else None,
         )
         obj.get_score()
 
     if args.recreate:
+
+        if not path.exists(results_path):
+            raise IOError("Document has not been processed yet.")
+
         parsed_html = textio.pdf_to_html(args.input_doc)
         new_doc_obj = recreate.ReconstructedHTML(
-            results_path="resume_scores.json", parsed_html=parsed_html)
+            results_path=results_path, parsed_html=parsed_html
+        )
 
         new_doc_obj.recreate_doc()
         new_doc = new_doc_obj.get_new_html()
@@ -145,7 +152,11 @@ if __name__ == "__main__":
 
     if args.stats:
 
-        results_obj = stats.Summary(results_path="resume_scores.json")
+        results_path = "resume_scores.json"
+        if not path.exists(results_path):
+            raise IOError("Document has not been processed yet.")
+
+        results_obj = stats.Summary(results_path=results_path)
         results_obj.get_top_resumes()
         results_obj.get_tfidf()
         results_obj.get_tfidf_summary()
