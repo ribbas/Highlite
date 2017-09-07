@@ -76,8 +76,12 @@ if __name__ == "__main__":
     parser.add_argument("--recreate", action="store_true",
                         help="| Create HTML output of the scored document")
 
-    parser.add_argument("--stats", action="store_true",
-                        help="| Get summary of resume analysis")
+    parser.add_argument(
+        "--stats", default=None,
+        choices=("closest_docs", "top_tfidf_terms", "tfidf_summary",
+                 "buzzwords"),
+        nargs="*", help="| Get summary of resume analysis"
+    )
 
     parser.add_argument(
         "--preview", action="store_true",
@@ -152,19 +156,28 @@ if __name__ == "__main__":
 
         textio.save_html(new_doc)
 
-    if args.stats:
+    if args.stats is not None:
 
         results_path = "resume_scores.json"
         if not path.exists(results_path):
             raise IOError("Document has not been processed yet.")
 
         results_obj = stats.Summary(results_path=results_path)
-        results_obj.get_top_resumes()
-        results_obj.get_tfidf()
-        results_obj.get_tfidf_summary()
-        results_obj.get_buzzwords()
+
+        if args.stats == [] or "closest_docs" in args.stats:
+            results_obj.get_top_docs()
+
+        if args.stats == [] or "top_tfidf_terms" in args.stats:
+            results_obj.get_top_tfidf()
+
+        if args.stats == [] or "tfidf_summary" in args.stats:
+            results_obj.get_tfidf_summary()
+
+        if args.stats == [] or "buzzwords" in args.stats:
+            results_obj.get_buzzwords()
 
     if args.buzzwords:
+
         buzzwords.generate_buzzwords()
 
     if args.preview:

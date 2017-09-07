@@ -17,33 +17,24 @@ class Summary(object):
         with open(results_path) as results_file:
             self.results = json.load(results_file)
 
-    def get_top_resumes(self):
+    def get_top_docs(self):
 
         print("\x1b[1;34;40mTop closest documents:\x1b[0m")
         pprint(self.results["top_resumes"], indent=2)
 
-    def get_tfidf(self):
+    def get_top_tfidf(self):
 
-        top_tfidf_scores = self.results["tfidf_scores"].values()
-        top_tfidf_scores = sorted(
-            set(i for i in top_tfidf_scores), reverse=True)[:5]
+        top_tfidf_scores = list(set(self.results["tfidf_scores"].values()))
+        top_tfidf_scores.sort()
+        top_tfidf_scores = top_tfidf_scores[:-6:-1]
 
         top_tfidf_terms = self.results["tfidf_scores"].items()
-        top_tfidf_terms = sorted(
-            (i for i in top_tfidf_terms if i[-1] in top_tfidf_scores),
-            key=lambda x: x[-1], reverse=True
-        )
+        top_tfidf_terms = [
+            i for i in top_tfidf_terms if i[-1] in top_tfidf_scores]
+        top_tfidf_terms.sort(key=lambda x: x[-1])
 
         print("\x1b[1;34;40mTop TF-IDF scored terms:\x1b[0m")
-        pprint(top_tfidf_terms, indent=2)
-
-    def get_buzzwords(self):
-
-        buzzwords = self.results["buzzwords"].values()
-        buzzwords_summary = {i: buzzwords.count(i) for i in buzzwords}
-
-        print("\x1b[1;34;40mBuzzwords frequency statistics:\x1b[0m")
-        pprint(buzzwords_summary, indent=2)
+        pprint(top_tfidf_terms[::-1], indent=2)
 
     def get_tfidf_summary(self):
 
@@ -56,3 +47,11 @@ class Summary(object):
             "mean": tfidf_stats.mean,
             "variance": tfidf_stats.variance,
         })
+
+    def get_buzzwords(self):
+
+        buzzwords = self.results["buzzwords"].values()
+        buzzwords_summary = {i: buzzwords.count(i) for i in buzzwords}
+
+        print("\x1b[1;34;40mBuzzwords frequency statistics:\x1b[0m")
+        pprint(buzzwords_summary, indent=2)
