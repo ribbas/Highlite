@@ -85,4 +85,21 @@ Once the corpus is built, it is saved on the path determined by `highlight.setti
 
 ## Options
 
-
+| Feature | Description | Default | Parameters |
+| ------------- | ------------- | ------------- | ------------- |
+| build | Method of building corpus | `None`| `<str>: {getresume, custom}`|
+| corpus | Labels of corpora to analyze against | `None` | `<list of <str>>` |
+| anon | Anonymize IP (for getresume only) | `False` | N/A |
+| pages | Number of pages beyond the first page to crawl (for getresume only) | `0`  | `<int>` |
+| dir_input | Path of input files to be converted into the corpus (for CustomCorpus only) | `""` | `<str>` |
+| input_t | Type of input sample files (for CustomCorpus only) | `pdf` | `<str>` |
+| score | Score input document | `False` | N/A |
+| ignore_terms | List of words to ignore in scoring document | `None` | `<list of <str>>` |
+| max_feats | Maximum number of features for the TF-IDF vectorizer | `None` | `<int>` |
+| ngram_range N N | n-grams range for the TF-IDF vectorizer | `1 3` | `2 <int>` |
+| use_stop_words | Stopwords for the TF-IDF vectorizer | `False` | N/A |
+| recreate | Create HTML output of the scored document | `False` | N/A |
+| stats | Get summary of resume analysis | `None` | `multiple <str>: {closest_docs, top_tfidf_terms, tfidf_summary, buzzwords}` |
+| preview | Opens up the tagged document of the browser for preview | `False` | N/A |
+| buzzwords | Update buzzwords corpus | `False` | N/A |
+| get_corpus_dir | Get the location of the generated corpus | `False` | N/A |

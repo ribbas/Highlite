@@ -12,20 +12,10 @@ from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
 
 if __name__ == "__main__":
 
-    class CapitalisedHelpFormatter(argparse.HelpFormatter):
-        def add_usage(self, usage, actions, groups):
-            return super(CapitalisedHelpFormatter, self).add_usage(
-                usage, actions, groups, "Usage: ")
-
     parser = argparse.ArgumentParser(
-        formatter_class=CapitalisedHelpFormatter,
-        description="The main executable script for Highlite",
-        add_help=False
+        description="The main executable script for Highlite", add_help=False
     )
 
-    # arguments for metadata on program
-    parser._positionals.title = "Positional parameters"
-    parser._optionals.title = "Optional parameters"
     parser.add_argument("-h", "--help", action="help",
                         default=argparse.SUPPRESS,
                         help="| Show this help message and exit")
@@ -55,7 +45,7 @@ if __name__ == "__main__":
         "--dir_input", default="", metavar="PATH",
         help="| Path of input files to be converted into the corpus (custom)")
 
-    parser.add_argument("--input_t", default="pdf", metavar="TYPE",
+    parser.add_argument("--input_t", default="pdf", metavar="EXT",
                         help="| Type of input sample files (custom)")
 
     # options for scoring document
@@ -99,7 +89,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--get_corpus_dir", action="store_true",
-        help="| Get the location of the directory of the generated corpus"
+        help="| Get the location of the generated corpora"
     )
 
     # parse arguments to pass into function
@@ -212,7 +202,5 @@ if __name__ == "__main__":
 
     if args.get_corpus_dir:
 
-        print(
-            "Location of generated corpus: \x1b[1;31;40m%s\x1b[0m"
-            % settings.RAWCORPUS_DIR
-        )
+        print("Location of generated corpus: \x1b[1;31;40m%s\x1b[0m"
+              % settings.RAWCORPUS_DIR)
