@@ -20,7 +20,7 @@ class Summary(object):
     def get_top_docs(self):
 
         print("\x1b[1;34;40mTop closest documents:\x1b[0m")
-        pprint(self.results["top_resumes"], indent=2)
+        pprint(self.results["top_docs"], indent=2)
 
     def get_top_tfidf(self):
 

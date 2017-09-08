@@ -11,10 +11,10 @@ from .textio import lsfile, pdf_to_text
 
 class CustomCorpus(object):
 
-    def __init__(self, area, path_to_dir, input_type="pdf"):
+    def __init__(self, corpus, path_to_dir, input_type="pdf"):
 
-        self.area = area
-        self.corpus_path = path.join(RAWCORPUS_DIR, self.area)
+        self.corpus = corpus
+        self.corpus_path = path.join(RAWCORPUS_DIR, self.corpus)
         self.path_to_dir = path_to_dir
         self.input_type = input_type
 
@@ -23,7 +23,7 @@ class CustomCorpus(object):
 
     def build(self):
 
-        print("Building custom corpus \'%s\'..." % self.area)
+        print("Building custom corpus \'%s\'..." % self.corpus)
         input_file_paths = lsfile(self.path_to_dir, "*." + self.input_type)
 
         if self.input_type == "pdf":
@@ -38,4 +38,4 @@ class CustomCorpus(object):
                     )
                 )
 
-        print("'%s' corpus built\n" % self.area)
+        print("'%s' corpus built\n" % self.corpus)

@@ -6,20 +6,25 @@ from __future__ import absolute_import, print_function, unicode_literals
 import argparse
 from os import path
 from pprint import pprint
-import sys
 
 from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
     settings, stats, textio
 
 if __name__ == "__main__":
 
+    class CapitalisedHelpFormatter(argparse.HelpFormatter):
+        def add_usage(self, usage, actions, groups):
+            return super(CapitalisedHelpFormatter, self).add_usage(
+                usage, actions, groups, "Usage: ")
+
     parser = argparse.ArgumentParser(
+        formatter_class=CapitalisedHelpFormatter,
         description="The main executable script for Highlite",
         add_help=False
     )
 
     # arguments for metadata on program
-    parser._positionals.title = "Parameters"
+    parser._positionals.title = "Positional parameters"
     parser._optionals.title = "Optional parameters"
     parser.add_argument("-h", "--help", action="help",
                         default=argparse.SUPPRESS,
@@ -30,16 +35,15 @@ if __name__ == "__main__":
                         help="| Show version and exit")
 
     # positional arguments
-    parser.add_argument("input_doc", metavar="<PATH TO INPUT FILE>",
+    parser.add_argument("input_doc", metavar="<PATH TO INPUT FILE>", nargs="?",
                         help="| Input document for analysis")
 
-    parser.add_argument("areas", nargs="+", metavar="<LIST OF AREAS>",
-                        help="| Disciplines to analyze against")
-
-    # optional arguments
     # options for building corpus
     parser.add_argument("--build", choices=("getresume", "custom"),
                         help="| Method of building corpus")
+
+    parser.add_argument("--corpus", nargs="*", metavar="LABEL",
+                        help="| Labels of corpora to analyze against")
 
     parser.add_argument("--anon", action="store_true",
                         help="| Anonymize IP (getresume)")
@@ -47,8 +51,9 @@ if __name__ == "__main__":
     parser.add_argument("--pages", default=0, metavar="N",
                         type=int, help="| Search pages to crawl (getresume)")
 
-    parser.add_argument("--dir", default="", metavar="PATH",
-                        help="| Path of input sample files (custom)")
+    parser.add_argument(
+        "--dir_input", default="", metavar="PATH",
+        help="| Path of input files to be converted into the corpus (custom)")
 
     parser.add_argument("--input_t", default="pdf", metavar="TYPE",
                         help="| Type of input sample files (custom)")
@@ -57,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument("--score", action="store_true",
                         help="| Score input document")
 
-    parser.add_argument("--ignore_words", nargs="+", metavar="<LIST OF WORDS>",
+    parser.add_argument("--ignore_terms", nargs="+", metavar="TERM",
                         help="| List of words to ignore in scoring document")
 
     parser.add_argument(
@@ -79,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--stats", default=None,
         choices=("closest_docs", "top_tfidf_terms", "tfidf_summary",
-                 "buzzwords"),
+                 "buzzwords"), metavar="OPT",
         nargs="*", help="| Get summary of resume analysis"
     )
 
@@ -92,22 +97,32 @@ if __name__ == "__main__":
     parser.add_argument("--buzzwords", action="store_true",
                         help="| Update buzzwords corpus")
 
+    parser.add_argument(
+        "--get_corpus_dir", action="store_true",
+        help="| Get the location of the directory of the generated corpus"
+    )
+
     # parse arguments to pass into function
     args = parser.parse_args()
     results_path = "resume_scores.json"
 
     print("\x1b[1;31;40mParameters chosen:\x1b[0m")
     pprint(args.__dict__, indent=2)
+    print()
 
     if args.build == "getresume":
+
+        if not(args.corpus):
+            argparse.ArgumentError(
+                "Corpus label not specified for building corpus")
 
         try:
 
             from getresume.buildcorpus import ResumeCorpus
 
-            for area in args.areas:
+            for corpus in args.corpus:
                 resume_corpus = ResumeCorpus(
-                    area=area,
+                    area=corpus,
                     pages=args.pages,
                     anon=bool(args.anon),
                 )
@@ -119,27 +134,37 @@ if __name__ == "__main__":
 
     elif args.build == "custom" and path.exists(args.dir):
 
-        for area in args.areas:
+        if not(args.corpus):
+            argparse.ArgumentError(
+                "Corpus label not specified for building corpus")
+
+        for corpus in args.corpus:
             resume_corpus = customcorpus.CustomCorpus(
-                area=area,
+                area=corpus,
                 path_to_dir=args.dir,
                 input_type=args.input_t
             )
             resume_corpus.build()
 
     if args.score:
-        obj = metrics.ScoreDoc(
+
+        if not(args.corpus):
+            raise argparse.ArgumentError(
+                args.corpus, "Corpus label not specified for document analysis"
+            )
+
+        metrics_obj = metrics.ScoreDoc(
             doc_path=args.input_doc,
-            areas=args.areas,
-            ignore_words=args.ignore_words,
+            corpora=args.corpus,
+            ignore_terms=args.ignore_terms,
             corpus_path=settings.RAWCORPUS_DIR,
         )
-        obj.generate_tfidf(
+        metrics_obj.generate_tfidf(
             max_feats=args.max_feats,
             ngram_range=args.ngram_range,
             stop_words="english" if args.use_stop_words else None,
         )
-        obj.get_score()
+        metrics_obj.get_score()
 
     if args.recreate:
 
@@ -184,3 +209,10 @@ if __name__ == "__main__":
 
         import webbrowser
         webbrowser.get().open(settings.HTML_CONVERTED_PATH)
+
+    if args.get_corpus_dir:
+
+        print(
+            "Location of generated corpus: \x1b[1;31;40m%s\x1b[0m"
+            % settings.RAWCORPUS_DIR
+        )

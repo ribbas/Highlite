@@ -17,20 +17,20 @@ from .textutil import normalize_text
 
 class ScoreDoc(object):
 
-    def __init__(self, doc_path, areas, corpus_path, ignore_words=[]):
+    def __init__(self, doc_path, corpora, corpus_path, ignore_terms=[]):
 
-        self.ignore_words = ignore_words
+        self.ignore_terms = ignore_terms
 
         self.corpus = []
         self.train_resumes = []
         self.tfidf_matrix = None
         self.feature_names = None
 
-        for area in areas:
-            if not path.exists(path.join(corpus_path, area)):
-                raise IOError("No files found in corpus \"{}\"".format(area))
+        for corpus in corpora:
+            if not path.exists(path.join(corpus_path, corpus)):
+                raise IOError("No files found in corpus \"{}\"".format(corpus))
 
-            self.train_resumes.extend(lsfile(corpus_path, area, "*.txt"))
+            self.train_resumes.extend(lsfile(corpus_path, corpus, "*.txt"))
 
         for resume_file_path in self.train_resumes:
             with open(resume_file_path) as resume_file:
@@ -51,7 +51,7 @@ class ScoreDoc(object):
 
         tfidf = TfidfVectorizer(
             preprocessor=lambda x: normalize_text(
-                x, ignore_words=self.ignore_words),
+                x, ignore_terms=self.ignore_terms),
             max_features=max_feats,
             ngram_range=ngram_range,
             stop_words=stop_words,
@@ -71,7 +71,7 @@ class ScoreDoc(object):
         resume_names = [
             {
                 "index": i,
-                "area": j.split("/")[1],
+                "label": j.split("/")[1],
                 "name": j.split("/")[-1],
             } for i, j in enumerate(resume_names)
         ]
@@ -91,7 +91,7 @@ class ScoreDoc(object):
         buzzwords = {k: v for k, v in buzzwords.iteritems() if v}
 
         data = {
-            "top_resumes": resume_names,
+            "top_docs": resume_names,
             "tfidf_scores": tfidf_scores_features,
             "buzzwords": buzzwords,
         }
