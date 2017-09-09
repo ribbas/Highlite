@@ -51,7 +51,8 @@ class ScoreDoc(object):
 
         tfidf = TfidfVectorizer(
             preprocessor=lambda x: normalize_text(
-                x, ignore_terms=self.ignore_terms),
+                x, ignore_terms=self.ignore_terms
+            ),
             max_features=max_feats,
             ngram_range=ngram_range,
             stop_words=stop_words,

@@ -94,7 +94,11 @@ if __name__ == "__main__":
 
     # parse arguments to pass into function
     args = parser.parse_args()
-    results_path = "resume_scores.json"
+
+    results_path = ""
+    if args.input_doc:
+        results_path = path.basename(args.input_doc).rsplit(".")[0] \
+            + "_results.json"
 
     print("\x1b[1;31;40mParameters chosen:\x1b[0m")
     pprint(args.__dict__, indent=2)
@@ -173,7 +177,6 @@ if __name__ == "__main__":
 
     if args.stats is not None:
 
-        results_path = "resume_scores.json"
         if not path.exists(results_path):
             raise IOError("Document has not been processed yet.")
 

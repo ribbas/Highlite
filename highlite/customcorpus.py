@@ -33,7 +33,7 @@ class CustomCorpus(object):
                     parsed_path=path.join(
                         self.corpus_path,
                         "txt".join(
-                            path.basename(input_file_path).rsplit("pdf", 1)
+                            path.basename(input_file_path).rsplit("pdf")
                         )
                     )
                 )

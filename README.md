@@ -83,6 +83,10 @@ A collection of PDF files can be used as an input for building a corpus. Here is
 
 Once the corpus is built, it is saved on the path determined by `highlight.settings.RAWCORPUS_DIR`. The location can be viewed with: `python highlite.py --get_corpus_dir`
 
+### Restrictions
+
+Currently, only PDF files are supported as the input corpus. Plain text files can also be used as a corpus by manually moving them to the directory specified by `--get_corpus_dir`.
+
 ## Options
 
 | Feature | Description | Default | Parameters |
