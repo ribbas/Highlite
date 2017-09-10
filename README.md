@@ -8,7 +8,7 @@ Once installed, Highlight can be executed with the required data.
 
 ### Example Usages
 
-**To Build A Corpus**
+**To build a corpus**
 
 - **Using getresume**
 
@@ -18,21 +18,26 @@ Once installed, Highlight can be executed with the required data.
 
   `python highlite.py --build custom --corpus corpus_label1 --dir_input path/to/my_other_docs`
 
-**To Analyze The Input Document**
+**To analyze the input document**
 
 `python highlite.py john_doe_resume.pdf --corpus corpus_label1 corpus_label2 --score --ignore_terms john doe california --use_stop_words --ngram_range 1 2 --max_feats 500`
 
-**To Reconstruct The Document as an HTML**
+**To reconstruct the document as an HTML**
 
 `python highlite.py john_doe_resume.pdf --recreate`
 
-**To Preview the Reconstructed HTML File**
+**To preview the reconstructed HTML file**
 
 `python highlite.py john_doe_resume.pdf --preview`
 
-**To View Statistics on the Analysis Report**
+**To view statistics on the analysis report**
 
 `python highlite.py john_doe_resume.pdf --stats closest_docs top_tfidf_terms tfidf_summary`
+
+**All the features can be chained together as well**
+
+`python highlite.py john_doe_resume.pdf --corpus corpus_label1 --build getresume --corpus corpus_label1 corpus_label2 --anon --score --ignore_terms john doe california --use_stop_words --recreate --stats --preview`
+
 
 
 ## Installation
@@ -100,10 +105,10 @@ Currently, only PDF files are supported as the input corpus. Plain text files ca
 | score | Score input document | `False` | N/A |
 | ignore_terms | List of words to ignore in scoring document | `None` | `<list of <str>>` |
 | max_feats | Maximum number of features for the TF-IDF vectorizer | `None` | `<int>` |
-| ngram_range N N | n-grams range for the TF-IDF vectorizer | `1 3` | `2 <int>` |
+| ngram_range | n-grams range for the TF-IDF vectorizer | `1 3` | `2 <int>` |
 | use_stop_words | Stopwords for the TF-IDF vectorizer | `False` | N/A |
 | recreate | Create HTML output of the scored document | `False` | N/A |
-| stats | Get summary of resume analysis | `None` | `multiple <str>: {closest_docs, top_tfidf_terms, tfidf_summary, buzzwords}` |
+| stats | Get summary of resume analysis | `None` | `0 or multiple <str>: {closest_docs, top_tfidf_terms, tfidf_summary, buzzwords}` |
 | preview | Opens up the tagged document of the browser for preview | `False` | N/A |
 | buzzwords | Update buzzwords corpus | `False` | N/A |
 | get_corpus_dir | Get the location of the generated corpus | `False` | N/A |
