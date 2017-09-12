@@ -12,33 +12,31 @@ Once installed, Highlight can be executed with the required data.
 
 - **Using getresume**
 
-  `python highlite.py --build getresume --corpus corpus_label1 corpus_label2 --anon --pages 3`
+  `python highlite_cli.py --build getresume --corpus corpus_label1 corpus_label2 --anon --pages 3`
 
 - **Using CustomCorpus**
 
-  `python highlite.py --build custom --corpus corpus_label1 --dir_input path/to/my_other_docs`
+  `python highlite_cli.py --build custom --corpus corpus_label1 --dir_input path/to/my_other_docs`
 
 **To analyze the input document**
 
-`python highlite.py john_doe_resume.pdf --corpus corpus_label1 corpus_label2 --score --ignore_terms john doe california --use_stop_words --ngram_range 1 2 --max_feats 500`
+`python highlite_cli.py john_doe_resume.pdf --corpus corpus_label1 corpus_label2 --score --ignore_terms john doe california --use_stop_words --ngram_range 1 2 --max_feats 500`
 
 **To reconstruct the document as an HTML**
 
-`python highlite.py john_doe_resume.pdf --recreate`
+`python highlite_cli.py john_doe_resume.pdf --recreate`
 
 **To preview the reconstructed HTML file**
 
-`python highlite.py john_doe_resume.pdf --preview`
+`python highlite_cli.py john_doe_resume.pdf --preview`
 
 **To view statistics on the analysis report**
 
-`python highlite.py john_doe_resume.pdf --stats closest_docs top_tfidf_terms tfidf_summary`
+`python highlite_cli.py john_doe_resume.pdf --stats closest_docs top_tfidf_terms tfidf_summary`
 
 **All the features can be chained together as well**
 
-`python highlite.py john_doe_resume.pdf --corpus corpus_label1 --build getresume --corpus corpus_label1 corpus_label2 --anon --score --ignore_terms john doe california --use_stop_words --recreate --stats --preview`
-
-
+`python highlite_cli.py john_doe_resume.pdf --corpus corpus_label1 --build getresume --corpus corpus_label1 corpus_label2 --anon --score --ignore_terms john doe california --use_stop_words --recreate --stats --preview`
 
 ## Installation
 
@@ -84,17 +82,29 @@ If getresume is made available, it is integrated with Highlite and offers the fo
 If getresume is not available, corpora can be built manually with CustomCorpus.<br>
 A collection of PDF files can be used as an input for building a corpus. Here is an example usage of creating a corpus with PDF files stored in the directory `/path/to/dir`:<br>
 
-`python highlite.py --build custom --corpus corpus_label1 --dir_input path/to/dir`
+`python highlite_cli.py --build custom --corpus corpus_label1 --dir_input path/to/dir`
 
-Once the corpus is built, it is saved on the path determined by `highlight.settings.RAWCORPUS_DIR`. The location can be viewed with: `python highlite.py --get_corpus_dir`
+Once the corpus is built, it is saved on the path determined by `highlight.settings.RAWCORPUS_DIR`. The location can be viewed with: `python highlite_cli.py --get_corpus_dir`
 
 ### Restrictions
 
 Currently, only PDF files are supported as the input corpus. Plain text files can also be used as a corpus by manually moving them to the directory specified by `--get_corpus_dir`.
 
-## Options
+## Features
 
-| Feature | Description | Default | Parameters |
+### build
+
+Builds corpora for analysis on the target document.
+
+### Score
+
+### Stats
+
+### Recreate
+
+## Parameters
+
+| Option | Description | Default | Parameters |
 | ------------- | ------------- | ------------- | ------------- |
 | build | Method of building corpus | `None`| `<str>: {getresume, custom}`|
 | corpus | Labels of corpora to analyze against | `None` | `<list of <str>>` |

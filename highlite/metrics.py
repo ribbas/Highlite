@@ -10,16 +10,14 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
-from .settings import BUZZWORDS
+from . import BUZZWORDS
 from .textio import lsfile, pdf_to_text
 from .textutil import normalize_text
 
 
 class ScoreDoc(object):
 
-    def __init__(self, doc_path, corpora, corpus_path, ignore_terms=[]):
-
-        self.ignore_terms = ignore_terms
+    def __init__(self, doc_path, corpora, corpus_path):
 
         self.corpus = []
         self.train_resumes = []
@@ -46,12 +44,12 @@ class ScoreDoc(object):
         with open(BUZZWORDS) as buzzwords_file:
             self.buzzwords = json.load(buzzwords_file)
 
-    def generate_tfidf(self, max_feats=None, ngram_range=(1, 3),
-                       stop_words=None):
+    def generate_tfidf(self, ignore_terms=[], max_feats=None,
+                       ngram_range=(1, 3), stop_words=None):
 
         tfidf = TfidfVectorizer(
             preprocessor=lambda x: normalize_text(
-                x, ignore_terms=self.ignore_terms
+                x, ignore_terms=ignore_terms
             ),
             max_features=max_feats,
             ngram_range=ngram_range,
@@ -61,7 +59,7 @@ class ScoreDoc(object):
         self.tfidf_matrix = tfidf.fit_transform(self.resume + self.corpus)
         self.feature_names = tfidf.get_feature_names()
 
-    def get_score(self, filename="resume_scores", top=5):
+    def get_score(self, file_name="resume_scores.json", top=5):
 
         cos_sim = linear_kernel(
             self.tfidf_matrix[:1], self.tfidf_matrix).flatten()[1:]
@@ -97,7 +95,7 @@ class ScoreDoc(object):
             "buzzwords": buzzwords,
         }
 
-        with open(filename + ".json", "w") as out_file:
+        with open(file_name, "w") as out_file:
             json.dump(data, out_file)
 
     def is_buzzword(self, term):

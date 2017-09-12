@@ -9,7 +9,7 @@ import urllib2
 
 from bs4 import BeautifulSoup
 
-from .settings import BUZZWORDS
+from . import BUZZWORDS
 from .textutil import normalize_text
 
 regex = re.compile("[[(/]|( -)")

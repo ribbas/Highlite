@@ -11,7 +11,7 @@ from glob import glob
 from os import path
 import subprocess
 
-from .settings import HTML_CONVERTED_OUT, HTML_CONVERTED_PATH, PARSED_PATH
+from . import HTML_CONVERTED_OUT, HTML_CONVERTED_PATH, PARSED_PATH
 
 
 def pdf_to_text(file_path, parsed_path=PARSED_PATH):

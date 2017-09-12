@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from os import makedirs, path
 
-from .settings import RAWCORPUS_DIR
+from . import RAWCORPUS_DIR
 from .textio import lsfile, pdf_to_text
 
 

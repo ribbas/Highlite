@@ -11,7 +11,7 @@ from nltk.stem.porter import PorterStemmer
 import numpy as np
 from tqdm import trange
 
-from .settings import HEATMAP_CSS_PATH
+from . import HEATMAP_CSS_PATH
 from .textutil import normalize_text
 
 

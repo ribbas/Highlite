@@ -45,7 +45,7 @@ clean-all: clean reset
 clean:
 	# clean out cache and temporary files
 	@find . \( -name "*.pyc" -type f -o -name "__pycache__" -type d \) -delete
-	@find . -name "resume*" -type f -delete
+	@find . \( -name "resume*" -o -name "*_results.json" \) -type f -delete
 
 
 .PHONY: reset
