@@ -10,3 +10,4 @@ data/
 corpus/
 rawdata/
 target_doc*
+/tests/sample/target/*.json
