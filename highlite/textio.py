@@ -23,6 +23,7 @@ def pdf_to_text(file_path, parsed_path=PARSED_PATH):
     # print(open(parsed_path))
     print("output:", parsed_path)
 
+    print(path.exists(path.dirname(parsed_path)), "yayyyy")
     subprocess.call(["pdftotext", file_path, parsed_path])
 
     with open(parsed_path) as parsed_file:
