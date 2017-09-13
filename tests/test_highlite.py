@@ -5,14 +5,16 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from os import getcwd, path
+import sys
 
-REAL_PATH = path.join(
+with open(path.join(
     path.dirname(path.dirname(__file__)), "highlite", "basedir"
-)
-with open(REAL_PATH, "w") as custom_dir:
+), "w") as custom_dir:
     custom_dir.write(unicode(path.dirname(getcwd())))
 
-from context import highlite
+MODULE_PATH = path.join(path.dirname(path.abspath(path.dirname(__file__))))
+sys.path.append(MODULE_PATH)
+
 from highlite import BASE_DIR, RAWCORPUS_DIR
 from highlite import customcorpus, metrics, recreate, textio
 
@@ -23,16 +25,16 @@ TEST_DOCS = path.join(SAMPLE_DIR, "test_docs")
 RESULTS_PATH = path.join(TARGET_DOC.replace("pdf", "json"))
 
 
-def test_build():
-    """Build a custom corpus"""
+# def test_build():
+#     """Build a custom corpus"""
 
-    resume_corpus = customcorpus.CustomCorpus(
-        corpus=CORPUS_LABEL,
-        path_to_dir=TEST_DOCS,
-    )
-    resume_corpus.build()
+#     resume_corpus = customcorpus.CustomCorpus(
+#         corpus=CORPUS_LABEL,
+#         path_to_dir=TEST_DOCS,
+#     )
+#     resume_corpus.build()
 
-    assert(textio.lsfile(RAWCORPUS_DIR, CORPUS_LABEL, "*.txt"))
+#     assert(textio.lsfile(RAWCORPUS_DIR, CORPUS_LABEL, "*.txt"))
 
 
 def test_score():
