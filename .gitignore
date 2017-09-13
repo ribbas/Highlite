@@ -5,8 +5,7 @@ __pycache__/
 
 # Temporary files and directories
 /secret
-# data/
-/data/
+data/
 /sample_input/
 corpus/
 rawdata/

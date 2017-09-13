@@ -18,14 +18,6 @@ def pdf_to_text(file_path, parsed_path=PARSED_PATH):
 
     print("Parsing \'%s\'..." % path.basename(file_path), end=" ")
 
-    print("input:", file_path)
-    # print(open(file_path))
-    print("output:", parsed_path)
-
-    print(path.exists(path.dirname(parsed_path)), "yayyyy")
-    print(lsfile(path.dirname(parsed_path), "*"))
-    print(lsfile(path.dirname(parsed_path), "data", "rawcorpus", "test_corpus", "*"))
-
     subprocess.call(["pdftotext", file_path, parsed_path])
 
     with open(parsed_path) as parsed_file:
