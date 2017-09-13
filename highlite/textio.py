@@ -24,7 +24,8 @@ def pdf_to_text(file_path, parsed_path=PARSED_PATH):
     print("output:", parsed_path)
 
     print(path.exists(path.dirname(parsed_path)), "yayyyy")
-    print(lsfile(path.dirname(parsed_path), "data", "rawcorpus", "*"))
+    print(lsfile(path.dirname(parsed_path), "data", "rawcorpus", "test_corpus", "*"))
+
     subprocess.call(["pdftotext", file_path, parsed_path])
 
     with open(parsed_path) as parsed_file:
