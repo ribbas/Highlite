@@ -98,9 +98,15 @@ Builds corpora for analysis on the target document.
 
 ### Score
 
+Uses a TF-IDF vectorizer to perform a cosine similarity analysis on the target document against the corpora specified. The hyperparameters of the vectorizer can be specified as well.
+
 ### Stats
 
+Prints out general statistics generated on the analysis results.
+
 ### Recreate
+
+Generates an HTML document with the tagged terms from the analysis by highlighting the terms in a heatmap palette.
 
 ## Parameters
 
