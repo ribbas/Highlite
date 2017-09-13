@@ -43,9 +43,10 @@ clean-all: clean reset
 
 .PHONY: clean
 clean:
-	# clean out cache and temporary files
+	# clean out temporary and cached files
 	@find . \( -name "*.pyc" -type f -o -name "__pycache__" -type d \) -delete
 	@find . \( -name "resume*" -o -name "*_results.json" \) -type f -delete
+	@>highlite/basedir
 
 
 .PHONY: reset

@@ -12,8 +12,6 @@ from highlite import _version, buzzwords, customcorpus, metrics, recreate, \
 
 if __name__ == "__main__":
 
-    print(RAWCORPUS_DIR)
-
     parser = argparse.ArgumentParser(
         description="The main executable script for Highlite", add_help=False
     )
@@ -165,21 +163,6 @@ if __name__ == "__main__":
         )
         metrics_obj.get_score(results_path)
 
-    if args.recreate:
-
-        if not path.exists(results_path):
-            raise IOError("Document has not been processed yet.")
-
-        parsed_html = textio.pdf_to_html(args.target_doc)
-        new_doc_obj = recreate.ReconstructedHTML(
-            results_path=results_path, parsed_html=parsed_html
-        )
-
-        new_doc_obj.recreate_doc()
-        new_doc = new_doc_obj.get_new_html()
-
-        textio.save_html(new_doc)
-
     if args.stats is not None:
 
         if not path.exists(results_path):
@@ -199,6 +182,21 @@ if __name__ == "__main__":
 
         if args.stats == [] or "buzzwords" in args.stats:
             results_obj.get_buzzwords()
+
+    if args.recreate:
+
+        if not path.exists(results_path):
+            raise IOError("Document has not been processed yet.")
+
+        parsed_html = textio.pdf_to_html(args.target_doc)
+        new_doc_obj = recreate.ReconstructedHTML(
+            results_path=results_path, parsed_html=parsed_html
+        )
+
+        new_doc_obj.recreate_doc()
+        new_doc = new_doc_obj.get_new_html()
+
+        textio.save_html(new_doc)
 
     if args.buzzwords:
 
