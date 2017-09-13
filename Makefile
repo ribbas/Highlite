@@ -45,7 +45,7 @@ clean-all: clean reset
 clean:
 	# clean out temporary and cached files
 	@find . \( -name "*.pyc" -type f -o -name "__pycache__" -type d \) -delete
-	@find . \( -name "resume*" -o -name "*_results.json" \) -type f -delete
+	@find . \( -name "target_doc*" -o -name "*_results.json" \) -type f -delete
 	@>highlite/basedir
 
 
@@ -53,6 +53,6 @@ clean:
 reset:
 	# remove distribution and raw data files
 	@find . \( -path "./corpus/*" -o -path "./dist/*" -o -path "./data/*" -o \
-		-path "./*resume.txt" \) -delete
+		-path "./*target_doc.txt" \) -delete
 	@find . \( -path "./corpus" -o -path "./dist" -o -path "./data" \) -empty \
 		-delete

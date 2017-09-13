@@ -20,6 +20,7 @@ class CustomCorpus(object):
 
         if not path.exists(self.corpus_path):
             makedirs(self.corpus_path)
+            print(path.exists(self.corpus_path), "yayyyy")
 
     def build(self):
 

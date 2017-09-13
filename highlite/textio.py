@@ -19,8 +19,8 @@ def pdf_to_text(file_path, parsed_path=PARSED_PATH):
     print("Parsing \'%s\'..." % path.basename(file_path), end=" ")
 
     print("input:", file_path)
-    print(open(file_path))
-    print(open(parsed_path))
+    # print(open(file_path))
+    # print(open(parsed_path))
     print("output:", parsed_path)
 
     subprocess.call(["pdftotext", file_path, parsed_path])
@@ -38,7 +38,7 @@ def pdf_to_html(file_path):
 
     if not path.exists(HTML_CONVERTED_OUT):
         subprocess.call(
-            ["pdftohtml", "-s", "-c", file_path, HTML_CONVERTED_PATH]
+            ["pdftohtml", "-s", "-c", "-q", file_path, HTML_CONVERTED_PATH]
         )
 
     with open(HTML_CONVERTED_OUT) as parsed_file:
@@ -49,7 +49,7 @@ def pdf_to_html(file_path):
     return parsed_html
 
 
-def save_html(content, file_path="resume.html"):
+def save_html(content, file_path="target_doc.html"):
 
     with open(file_path, "w") as html_file:
         html_file.write(content)

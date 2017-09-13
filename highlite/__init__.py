@@ -10,9 +10,9 @@ with open(path.join(path.dirname(__file__), "basedir")) as custom_dir:
     PROJ_DIR = custom_dir.read() or BASE_DIR
 
 
-PARSED_PATH = path.join(BASE_DIR, "resume.txt")
-HTML_CONVERTED_PATH = path.join(BASE_DIR, "resume.html")
-HTML_CONVERTED_OUT = path.join(BASE_DIR, "resume-html.html")
+PARSED_PATH = path.join(BASE_DIR, "target_doc.txt")
+HTML_CONVERTED_PATH = path.join(BASE_DIR, "target_doc.html")
+HTML_CONVERTED_OUT = path.join(BASE_DIR, "target_doc-html.html")
 HEATMAP_CSS_PATH = path.join(PROJ_DIR, "ext", "heatmap.css")
 BUZZWORDS = path.join(PROJ_DIR, "ext", "buzzwords.json")
 

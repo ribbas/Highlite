@@ -9,4 +9,4 @@ data/
 /sample_input/
 corpus/
 rawdata/
-resume*
+target_doc*
