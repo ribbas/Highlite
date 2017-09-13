@@ -13,8 +13,8 @@ with open(REAL_PATH, "w") as custom_dir:
     custom_dir.write(unicode(path.dirname(getcwd())))
 
 from context import highlite
-from highlite import BASE_DIR, RAWCORPUS_DIR, customcorpus, metrics, recreate,\
-    textio
+from highlite import BASE_DIR, RAWCORPUS_DIR
+from highlite import customcorpus, metrics, recreate, textio
 
 CORPUS_LABEL = "test_corpus"
 SAMPLE_DIR = path.join(BASE_DIR, "sample")
