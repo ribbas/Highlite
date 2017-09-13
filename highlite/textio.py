@@ -20,7 +20,7 @@ def pdf_to_text(file_path, parsed_path=PARSED_PATH):
 
     print("input:", file_path)
     print(open(file_path))
-    print(open(parsed_path).read())
+    print(open(parsed_path))
     print("output:", parsed_path)
 
     subprocess.call(["pdftotext", file_path, parsed_path])
