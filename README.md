@@ -100,13 +100,21 @@ Builds corpora for analysis on the target document.
 
 Uses a TF-IDF vectorizer to perform a cosine similarity analysis on the target document against the corpora specified. The hyperparameters of the vectorizer can be specified as well.
 
+<img src="https://raw.githubusercontent.com/sabbirahm3d/Highlite/master/assets/score.gif">
+
 ### Stats
 
 Prints out general statistics generated on the analysis results.
 
+<img src="https://raw.githubusercontent.com/sabbirahm3d/Highlite/master/assets/stats.gif">
+
 ### Recreate
 
 Generates an HTML document with the tagged terms from the analysis by highlighting the terms in a heatmap palette.
+
+<img src="https://raw.githubusercontent.com/sabbirahm3d/Highlite/master/assets/recreate.gif">
+
+<img src="https://raw.githubusercontent.com/sabbirahm3d/Highlite/master/assets/preview.gif">
 
 ## Parameters
 
